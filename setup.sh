@@ -92,7 +92,6 @@ sudo pacman -S --needed --noconfirm \
     xorg-xinit \
     xorg-xrandr \
     xorg-xsetroot \
-    xautolock \
     xss-lock \
     lxsession \
     lxappearance
@@ -214,6 +213,9 @@ fi
 
 # Install i3lock-color (required for betterlockscreen)
 yay -S --needed --noconfirm i3lock-color
+
+# Install xautolock
+yay -S -needed --noconfirm xautolock
 
 # Install betterlockscreen
 yay -S --needed --noconfirm betterlockscreen
