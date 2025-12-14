@@ -345,6 +345,14 @@ if command -v gsettings &> /dev/null; then
     gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" 2>/dev/null || true
 fi
 
+echo -e "${CYAN}[11/11] Setting up Display Manager (Ly)...${NC}"
+sudo pacman -S --needed --noconfirm ly
+sudo systemctl disable getty@tty2.service
+sudo systemctl enable ly@tty2.service
+
+echo -e "${GREEN}✓${NC} Ly Display Manager configured"
+
+
 echo ""
 echo -e "${CYAN}════════════════════════════════════════════════════${NC}"
 echo -e "${GREEN}✅  INSTALLATION COMPLETE${NC}"
