@@ -117,7 +117,6 @@ echo -e "${GREEN}✓${NC} Fonts installed"
 
 echo -e "${CYAN}[4/10] Installing themes...${NC}"
 sudo pacman -S --needed --noconfirm \
-    arc-gtk-theme \
     papirus-icon-theme \
     qt5ct \
     kvantum
@@ -216,6 +215,9 @@ yay -S --needed --noconfirm i3lock-color
 
 # Install xautolock
 yay -S -needed --noconfirm xautolock
+
+# Install xautolock
+yay -S -needed --noconfirm arc-gtk-theme
 
 # Install betterlockscreen
 yay -S --needed --noconfirm betterlockscreen
