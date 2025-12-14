@@ -1,0 +1,72 @@
+[global]
+    # --- DISPLAY ---
+    monitor = 0
+    follow = mouse
+    # Geometry: width x height - horizontal_padding x vertical_padding
+    geometry = "300x50-15+45"
+    indicate_hidden = yes
+    shrink = no
+    transparency = 0
+    notification_height = 0
+    separator_height = 2
+    padding = 10
+    horizontal_padding = 10
+    
+    # --- FRAME ---
+    frame_width = 2
+    frame_color = "#00ffff"
+    separator_color = frame
+
+    # --- TEXT ---
+    font = JetBrainsMono Nerd Font 10
+    line_height = 0
+    markup = full
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    show_age_threshold = 60
+    word_wrap = yes
+    ellipsize = middle
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = yes
+    
+    # --- ICONS ---
+    icon_position = left
+    max_icon_size = 48
+    
+    # --- HISTORY ---
+    sticky_history = yes
+    history_length = 20
+    
+    # --- MOUSE ---
+    browser = /usr/bin/firefox -new-tab
+    dmenu = /usr/bin/rofi -dmenu -p dunst:
+    title = Dunst
+    class = Dunst
+    corner_radius = 0
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+[urgency_low]
+    # Low priority - Grey border
+    background = "#000000"
+    foreground = "#888888"
+    frame_color = "#444444"
+    timeout = 10
+
+[urgency_normal]
+    # Normal - Cyan border (The Void Theme)
+    background = "#000000"
+    foreground = "#ffffff"
+    frame_color = "#00ffff"
+    timeout = 10
+
+[urgency_critical]
+    # Critical - Red border
+    background = "#000000"
+    foreground = "#ffffff"
+    frame_color = "#ff0000"
+    timeout = 0
