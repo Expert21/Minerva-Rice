@@ -1,0 +1,46 @@
+# ==========================================================
+#   YAZI CONFIG
+# ==========================================================
+
+[manager]
+# Layout Ratio: [Parent, Current, Preview]
+# 1:4:3 is good for wide screens (Big middle, big preview)
+ratio = [1, 4, 3]
+
+# Sorting
+sort_by        = "natural"
+sort_sensitive = false
+sort_reverse   = false
+sort_dir_first = true
+
+# Display
+show_hidden  = false
+show_symlink = true
+scrolloff    = 5
+
+[preview]
+# Image preview settings (Kitty handles this natively)
+tab_size        = 2
+max_width       = 600
+max_height      = 900
+cache_dir       = ""
+image_filter    = "lanczos3"
+image_quality   = 75
+sixel_fraction  = 15
+ueberzug_scale  = 1
+ueberzug_offset = [0, 0, 0, 0]
+
+[opener]
+# Configure what opens what
+edit = [
+    { run = '${EDITOR:-vi} "$@"', block = true, desc = "Edit" },
+]
+open = [
+    { run = 'xdg-open "$@"', desc = "Open" },
+]
+play = [
+    { run = 'mpv "$@"', orphan = true, for = "unix" },
+]
+
+[log]
+enabled = false
