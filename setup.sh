@@ -79,7 +79,6 @@ echo ""
 echo -e "${CYAN}[2/10] Installing i3 ecosystem...${NC}"
 sudo pacman -S --needed --noconfirm \
     i3-wm \
-    i3lock \
     polybar \
     rofi \
     dunst \
