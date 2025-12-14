@@ -37,7 +37,7 @@ bindsym $mod+Shift+l move up
 bindsym $mod+Shift+semicolon move right
 
 # Toggle Fullscreen
-bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+f fullscreen toggle
 
 # Toggle Tiling/Floating
 bindsym $mod+Shift+space floating toggle
@@ -118,8 +118,8 @@ exec --no-startup-id xautolock -time 10 -locker "betterlockscreen -l dim" &
 
 # **Notification Privacy**: Dunst will show notification content on your lockscreen by default. For a pentester machine, consider adding to dunstrc:
 
-[global]
-ignore_dbusclose = true
+# [global]
+# ignore_dbusclose = true
 
 # Screenshots (Flameshot)
 bindsym Print exec flameshot gui
