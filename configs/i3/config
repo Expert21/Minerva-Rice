@@ -1,0 +1,130 @@
+# --- VARIABLES ---
+set $mod Mod4
+# Mod4 = Windows/Super Key. Mod1 = Alt.
+
+# --- FONT ---
+# Used for window titles (if enabled) and the default bar (if you use it)
+font pango:JetBrainsMono Nerd Font 10
+
+# --- KEYBINDINGS: APPS ---
+# Open Terminal (Kitty)
+bindsym $mod+Return exec kitty
+
+# Open Launcher (Rofi)
+# We use -show drun to show the "App Drawer" mode
+bindsym $mod+d exec "rofi -show drun"
+
+# Open Browser (assuming Firefox, change if needed)
+bindsym $mod+b exec firefox
+
+# Open File Manager (Yazi in a terminal window)
+bindsym $mod+f exec kitty -e yazi
+
+# --- KEYBINDINGS: WINDOW MANAGEMENT ---
+# Kill focused window
+bindsym $mod+Shift+q kill
+
+# Change focus (Vim keys: j, k, l, ; or Arrow keys)
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+# Move focused window
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+
+# Toggle Fullscreen
+bindsym $mod+f fullscreen toggle
+
+# Toggle Tiling/Floating
+bindsym $mod+Shift+space floating toggle
+
+# --- KEYBINDINGS: SYSTEM ---
+# Reload the configuration file
+bindsym $mod+Shift+c reload
+# Restart i3 inplace (preserves your open windows)
+bindsym $mod+Shift+r restart
+# Exit i3 (logs you out)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exit i3?' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# Audio Controls (Requires pamixer)
+bindsym XF86AudioRaiseVolume exec pamixer -i 5
+bindsym XF86AudioLowerVolume exec pamixer -d 5
+bindsym XF86AudioMute exec pamixer -t
+
+# --- VISUALS: BORDERS & GAPS ---
+# Remove titlebars, use 2px border for "Cyber" look
+default_border pixel 2
+default_floating_border pixel 2
+
+# Inner gaps (space between windows) - Set to 0 for pure utilitarian look
+gaps inner 6
+# Outer gaps (space between windows and screen edge)
+gaps outer 0
+
+# --- VISUALS: COLORS (VOID CYBER THEME) ---
+# Color variables
+set $bg-color            #000000
+set $inactive-bg-color   #000000
+set $text-color          #ffffff
+set $inactive-text-color #666666
+set $urgent-bg-color     #E53935
+
+# THEME: High Contrast Cyan
+set $accent-color        #00ffff
+
+# Window Colors
+#                       border          background         text                 indicator        child_border
+client.focused          $accent-color   $bg-color          $text-color          $accent-color    $accent-color
+client.unfocused        #333333         $inactive-bg-color $inactive-text-color #333333          #333333
+client.focused_inactive #333333         $inactive-bg-color $inactive-text-color #333333          #333333
+client.urgent           $urgent-bg-color $urgent-bg-color  $text-color          $urgent-bg-color $urgent-bg-color
+
+# --- AUTOSTART ---
+# Start the compositor (prevents screen tearing, no effects)
+exec --no-startup-id picom
+
+# Set the wallpaper
+exec_always --no-startup-id feh --bg-fill ~/Pictures/wallpaper.jpg
+
+# Start the Status Bar
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+
+# Start Network Applet (for WiFi tray icon)
+exec --no-startup-id nm-applet
+
+# Clipboard 
+exec --no-startup-id greenclip daemon
+bindsym $mod+c exec rofi -modi "clipboard:greenclip print" -show clipboard
+
+# Start Notification Daemon
+exec --no-startup-id dunst
+
+# --- LOCK SCREEN (Betterlockscreen) ---
+
+# Manual lock shortcut (Mod + Shift + X)
+bindsym $mod+Shift+x exec betterlockscreen -l dim
+
+# Auto-lock on suspend/sleep
+# Note: The '-l dim' argument dims the screen slightly before locking. 
+# You can change 'dim' to 'blur' or just omit it for standard lock.
+exec --no-startup-id xss-lock --transfer-sleep-lock -- betterlockscreen -l dim
+exec --no-startup-id xautolock -time 10 -locker "betterlockscreen -l dim" &
+
+# 10 minutes idle = auto-lock. Adjust to taste. Especially important if you're pulling this onto a laptop for on-site work.
+
+# **Notification Privacy**: Dunst will show notification content on your lockscreen by default. For a pentester machine, consider adding to dunstrc:
+
+[global]
+ignore_dbusclose = true
+
+# Screenshots (Flameshot)
+bindsym Print exec flameshot gui
+bindsym Shift+Print exec flameshot full -c
+
+# Brightness (for laptops)
+bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
