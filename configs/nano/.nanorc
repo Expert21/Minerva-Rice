@@ -1,0 +1,42 @@
+# ==========================================================
+#   NANO CONFIG - VOID CYBER
+# ==========================================================
+
+# --- BASIC SETTINGS ---
+set linenumbers
+set autoindent
+set tabsize 4
+set tabstospaces
+set smooth
+set mouse
+
+# Don't create backup files (file~) cluttering up directories
+unset backup
+
+# --- UI COLORS (THEME) ---
+# Format: [bold,][text_color],[background_color]
+
+# The Title Bar (Top): Black text on Cyan background
+set titlecolor bold,black,cyan
+
+# The Status Bar (Bottom): Black text on Cyan background
+set statuscolor bold,black,cyan
+
+# The Line Numbers: Cyan
+set numbercolor cyan
+
+# Selected Text: White text on Magenta (High Contrast)
+set selectedcolor white,magenta
+
+# Key Shortcuts in Help Area: Cyan
+set keycolor cyan
+
+# Function Descriptions in Help Area: White
+set functioncolor white
+
+# --- SYNTAX HIGHLIGHTING ---
+# This pulls in the definitions we installed via pacman
+include "/usr/share/nano/*.nanorc"
+
+# If you build custom definitions or use specific ones,
+# you can include them here manually.
