@@ -213,10 +213,10 @@ fi
 yay -S --needed --noconfirm i3lock-color
 
 # Install xautolock
-yay -S -needed --noconfirm xautolock
+yay -S --needed --noconfirm xautolock
 
-# Install xautolock
-yay -S -needed --noconfirm arc-gtk-theme
+# Install arc-gtk-theme
+yay -S --needed --noconfirm arc-gtk-theme
 
 # Install betterlockscreen
 yay -S --needed --noconfirm betterlockscreen
