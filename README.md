@@ -44,7 +44,7 @@ This isn't a showcase rice - it's a **tool**. Built for long pentesting sessions
 - Internet connection
 - `git` installed
 
-### Quick Install (Recommended)
+### Install
 Fully automated - zero manual intervention:
 ```bash
 git clone https://github.com/YourUsername/minerva-pentest
@@ -53,14 +53,6 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-### Manual Install (Advanced)
-Step-by-step with prompts for each component:
-```bash
-git clone https://github.com/YourUsername/minerva-pentest
-cd minerva-pentest
-chmod +x setup-manual.sh
-./setup-manual.sh
-```
 
 Choose manual install if you:
 - Want to skip certain packages
