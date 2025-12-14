@@ -1,0 +1,58 @@
+# ==========================================================
+#   YAZI THEME - VOID CYBER
+# ==========================================================
+
+# --- FILE MANAGER ---
+[manager]
+
+
+# Current working directory path at top
+cwd = { fg = "#00ffff", italic = true }
+
+# The file you are hovering over (Cyan bar, black text)
+hovered = { fg = "#000000", bg = "#00ffff", bold = true }
+
+# Preview window title
+preview_hovered = { fg = "#00ffff", bold = true }
+
+# Find/Search matches
+find_keyword = { fg = "#00ffff", italic = true }
+find_position = { fg = "#ff0000", bg = "reset", italic = true }
+
+# Markers (Selected files)
+marker_selected = { fg = "#00ff99", bg = "reset" }
+marker_copied   = { fg = "#fdd835", bg = "reset" }
+marker_cut      = { fg = "#ff0000", bg = "reset" }
+
+# Tab bar (top)
+tab_active   = { fg = "#000000", bg = "#00ffff" }
+tab_inactive = { fg = "#ffffff", bg = "#333333" }
+tab_width    = 1
+
+# Borders
+border_symbol = "│"
+border_style  = { fg = "#333333" }
+
+# --- STATUS BAR (Bottom) ---
+[status]
+separator_open  = ""
+separator_close = ""
+separator_style = { fg = "#333333", bg = "#333333" }
+
+# Mode indicator (Normal/Visual/Select)
+mode_normal = { fg = "#000000", bg = "#00ffff", bold = true }
+mode_select = { fg = "#000000", bg = "#00ff99", bold = true }
+mode_unset  = { fg = "#000000", bg = "#d02b61", bold = true }
+
+# Permissions/Progress
+progress_label  = { fg = "#ffffff", bold = true }
+progress_normal = { fg = "#00ffff", bg = "#333333" }
+progress_error  = { fg = "#ff0000", bg = "#333333" }
+permissions_t   = { fg = "#00ffff" }
+permissions_r   = { fg = "#fdd835" }
+permissions_w   = { fg = "#ff0000" }
+permissions_x   = { fg = "#00ff99" }
+permissions_s   = { fg = "#7f7f7f" }
+
+# --- ICONS (Optional Override) ---
+# Yazi uses Nerd Fonts automatically, so defaults are usually fine.
