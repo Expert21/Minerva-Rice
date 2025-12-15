@@ -1,0 +1,149 @@
+# ==========================================================
+#   CAVA CONFIG - ETHEREAL MODE
+#   Audio visualizer with neon gradient colors
+#   Place at: ~/.config/cava/config
+# ==========================================================
+
+[general]
+
+# Smoothing mode. Can be 'normal', 'scientific' or 'waves'.
+mode = normal
+
+# Framerate. Default: 60. Accepts only non-negative values.
+framerate = 60
+
+# Sensitivity. If you think the bars are too low/high, adjust this.
+# Default: 100. Range: 0-1000.
+sensitivity = 100
+
+# Auto sensitivity. Automatically adjust sensitivity based on audio levels.
+autosens = 1
+
+# Number of bars. Default: 0 (auto-detect terminal width)
+# 0 = full width, or specify number like 200
+bars = 0
+
+# Bar width. Default: 2
+bar_width = 2
+
+# Bar spacing. Default: 1
+bar_spacing = 1
+
+# Lower cutoff freq for lowest bar
+lower_cutoff_freq = 50
+
+# Higher cutoff freq for highest bar
+higher_cutoff_freq = 10000
+
+# ==========================================================
+# VISUALIZER STYLING
+# ==========================================================
+
+[output]
+
+# Output method. Can be 'ncurses', 'noncurses', 'raw', 'noritake', or 'circle'.
+# We use ncurses for terminal display
+method = ncurses
+
+# Visual channels. Can be 'stereo' or 'mono'.
+channels = mono
+
+# Raw target. A fifo will be created if it doesn't exist.
+# raw_target = /tmp/cava.fifo
+
+# Visualizer orientation. Can be 'bottom', 'top', 'left' or 'right'.
+# Default: 'bottom'
+orientation = bottom
+
+# Width of visualizer. Default: 80. Range: 1-5000
+# xaxis = 25
+
+# ==========================================================
+# COLORS - Neon Gradient (Pink -> Cyan -> Purple)
+# ==========================================================
+
+[color]
+
+# Colors can be one of seven predefined: black, red, green, yellow, blue, magenta, cyan, white
+# Or define custom with hex code. Format: '#RRGGBB'
+
+# Background color. Default: 'black'
+background = '#0A0E27'
+
+# Foreground color. Default: 'cyan'
+foreground = '#E5E9F0'
+
+# Gradient mode. 0 = no gradient, 1 = use gradient
+gradient = 1
+
+# The number of colors in gradient. Must be at least 2.
+# Each color is a hexadecimal RGB value.
+gradient_count = 6
+
+# Define gradient colors (bottom to top)
+# Pink -> Magenta -> Purple -> Blue -> Cyan -> Teal
+gradient_color_1 = '#FF007F'  # Hot Pink (bottom)
+gradient_color_2 = '#FF00AA'  # Magenta
+gradient_color_3 = '#BB00FF'  # Purple
+gradient_color_4 = '#7B00FF'  # Deep Purple
+gradient_color_5 = '#00D9FF'  # Cyan
+gradient_color_6 = '#00FFFF'  # Bright Cyan (top)
+
+# ==========================================================
+# SMOOTHING
+# ==========================================================
+
+[smoothing]
+
+# Integral smoothing. Larger value = smoother, slower response.
+# Default: 77. Range: 0-99
+integral = 70
+
+# Monstercat smoothing. Larger value = smoother, slower response.
+# Default: 1.5. Range: 0-10
+monstercat = 1.5
+
+# Waves smoothing. Can be 0 or 1. Only affects 'waves' mode.
+waves = 0
+
+# Gravity. Higher values make bars fall faster.
+# Default: 100. Range: 0-1000
+gravity = 120
+
+# Ignore. Lower values = more bars. Higher = fewer bars.
+# Default: 0
+ignore = 0
+
+# ==========================================================
+# EQ (EXPERIMENTAL)
+# ==========================================================
+
+[eq]
+
+# 1 = on, 0 = off. Experimental equalizer.
+# Warning: Can cause high CPU usage
+# 1 = on, 0 = off
+eq = 0
+
+# ==========================================================
+# INPUT
+# ==========================================================
+
+[input]
+
+# Audio source. Can be:
+# - 'pulse' (PulseAudio)
+# - 'alsa' (ALSA)
+# - 'fifo' (Read from FIFO)
+# - 'sndio' (OpenBSD)
+method = pulse
+
+# PulseAudio source. Leave blank for default.
+# Find sources with: pactl list sources short
+source = auto
+
+# Sample rate. Default: 44100
+sample_rate = 44100
+
+# Sample bits. Default: 16
+sample_bits = 16
