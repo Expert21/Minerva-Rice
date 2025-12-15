@@ -1,0 +1,170 @@
+# ==========================================================
+#   DUNST CONFIG - ETHEREAL MODE
+#   Rounded, colorful, icon-heavy notifications
+# ==========================================================
+
+[global]
+    # --- DISPLAY ---
+    monitor = 0
+    follow = mouse
+    
+    # Geometry: width x height + horizontal_offset + vertical_offset
+    width = (300, 400)
+    height = 120
+    origin = top-right
+    offset = 20x50
+    
+    scale = 0
+    notification_limit = 5
+    
+    # --- PROGRESS BAR ---
+    progress_bar = true
+    progress_bar_height = 10
+    progress_bar_frame_width = 1
+    progress_bar_min_width = 150
+    progress_bar_max_width = 300
+    
+    indicate_hidden = yes
+    transparency = 10
+    separator_height = 2
+    padding = 15
+    horizontal_padding = 15
+    text_icon_padding = 15
+    
+    # --- FRAME ---
+    frame_width = 2
+    frame_color = "#FF007F"
+    separator_color = frame
+    
+    # --- ROUNDED CORNERS ---
+    corner_radius = 12
+    
+    # --- TEXT ---
+    font = JetBrainsMono Nerd Font 11
+    line_height = 0
+    markup = full
+    
+    # Format with title and body
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    show_age_threshold = 60
+    
+    ellipsize = middle
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = yes
+    
+    # --- ICONS ---
+    enable_recursive_icon_lookup = true
+    icon_theme = Papirus-Dark
+    icon_position = left
+    min_icon_size = 32
+    max_icon_size = 64
+    icon_path = /usr/share/icons/Papirus-Dark/48x48/status/:/usr/share/icons/Papirus-Dark/48x48/devices/:/usr/share/icons/Papirus-Dark/48x48/apps/
+    
+    # --- HISTORY ---
+    sticky_history = yes
+    history_length = 20
+    
+    # --- MISC ---
+    dmenu = /usr/bin/rofi -dmenu -p dunst:
+    browser = /usr/bin/firefox -new-tab
+    
+    always_run_script = true
+    title = Dunst
+    class = Dunst
+    
+    # --- MOUSE ACTIONS ---
+    mouse_left_click = do_action, close_current
+    mouse_middle_click = close_current
+    mouse_right_click = close_all
+
+# ==========================================================
+# URGENCY LEVELS - Anime Color Coded
+# ==========================================================
+
+[urgency_low]
+    # Low priority - Cyan glow (Slime blue)
+    background = "#0A0E27"
+    foreground = "#E5E9F0"
+    frame_color = "#00D9FF"
+    timeout = 5
+    icon = dialog-information
+
+[urgency_normal]
+    # Normal - Pink/Magenta (Edgerunner neon)
+    background = "#0A0E27"
+    foreground = "#E5E9F0"
+    frame_color = "#FF007F"
+    timeout = 10
+    icon = dialog-information
+
+[urgency_critical]
+    # Critical - Hot Red with gold border (Overlord power)
+    background = "#0A0E27"
+    foreground = "#FFFFFF"
+    frame_color = "#FFB800"
+    timeout = 0
+    icon = dialog-error
+
+# ==========================================================
+# APP-SPECIFIC RULES
+# ==========================================================
+
+# Music player notifications - Purple theme
+[spotify]
+    appname = Spotify
+    frame_color = "#BB00FF"
+    format = "<b>󰓇 %s</b>\n%b"
+    timeout = 5
+
+[playerctl]
+    appname = playerctl
+    frame_color = "#BB00FF"
+    format = "<b>󰝚 %s</b>\n%b"
+    timeout = 5
+
+# Volume notifications - Pink
+[volume]
+    summary = "Volume"
+    frame_color = "#FF007F"
+    format = "<b>%s</b>\n%b"
+    timeout = 2
+
+# Brightness notifications - Gold
+[brightness]
+    summary = "Brightness"
+    frame_color = "#FFB800"
+    format = "<b>%s</b>\n%b"
+    timeout = 2
+
+# Battery warnings - Cyan low, Red critical
+[battery_low]
+    summary = "Battery Low"
+    frame_color = "#00D9FF"
+    timeout = 10
+
+[battery_critical]
+    summary = "Battery Critical"
+    frame_color = "#FF3366"
+    timeout = 0
+
+# Screenshot notifications - Green/Cyan
+[screenshot]
+    appname = flameshot
+    frame_color = "#00FF9F"
+    timeout = 3
+
+# Network notifications - Cyan
+[network]
+    appname = NetworkManager
+    frame_color = "#00D9FF"
+    timeout = 5
+
+# System updates - Gold
+[updates]
+    summary = "*update*"
+    frame_color = "#FFB800"
+    timeout = 10
