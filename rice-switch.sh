@@ -65,7 +65,7 @@ elif [ "$MODE" == "ethereal" ]; then
     
     # 4. Launch Bars, Widgets & Wallpaper
     ~/.config/polybar/launch.sh
-    nitrogen --restore & 
+    nitrogen --set-zoom-fill ~/Pictures/Wallpapers/ethereal-wallpaper.jpg --save &
     conky -c ~/.config/conky/ethereal.conf &
     
     notify-send "🌸 Ethereal Mode Activated" "Anime aesthetic, full immersion"
