@@ -39,6 +39,7 @@ bindsym $mod+d exec "rofi -show drun"
 bindsym $mod+Shift+q kill
 bindsym $mod+f fullscreen toggle
 bindsym $mod+Shift+space floating toggle
+bindsym $mod+e exec alacritty -e ranger
 
 # Focus (Vim keys)
 bindsym $mod+h focus left
