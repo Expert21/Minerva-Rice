@@ -1,0 +1,67 @@
+# ==========================================================
+#   ALACRITTY CONFIG - ETHEREAL MODE
+# ==========================================================
+
+window:
+  padding:
+    x: 15
+    y: 15
+  opacity: 0.90
+  decorations: none
+  dynamic_title: true
+
+font:
+  normal:
+    family: JetBrainsMono Nerd Font
+    style: Regular
+  bold:
+    family: JetBrainsMono Nerd Font
+    style: Bold
+  italic:
+    family: JetBrainsMono Nerd Font
+    style: Italic
+  size: 12.0
+
+colors:
+  primary:
+    background: '#0A0E27'
+    foreground: '#E5E9F0'
+
+  cursor:
+    text:   '#0A0E27'
+    cursor: '#FF007F'
+
+  selection:
+    text:       '#E5E9F0'
+    background: '#BB00FF'
+
+  normal:
+    black:   '#1a1b26'
+    red:     '#FF3366'
+    green:   '#00FF9F'
+    yellow:  '#FFB800'
+    blue:    '#00D9FF'
+    magenta: '#FF007F'
+    cyan:    '#00FFFF'
+    white:   '#E5E9F0'
+
+  bright:
+    black:   '#4C566A'
+    red:     '#FF4577'
+    green:   '#00FFAA'
+    yellow:  '#FFCC00'
+    blue:    '#00E5FF'
+    magenta: '#FF00AA'
+    cyan:    '#00FFFF'
+    white:   '#FFFFFF'
+
+cursor:
+  style:
+    shape: Block
+    blinking: On
+  blink_interval: 750
+
+bell:
+  animation: EaseOutExpo
+  duration: 100
+  color: '#FF007F'
