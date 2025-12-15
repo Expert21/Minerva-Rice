@@ -38,8 +38,8 @@ if [ "$MODE" == "pentest" ]; then
     killall conky 2>/dev/null
     
     # 5. Launch Bars & Wallpaper
-    ~/.config/polybar/launch-pentest.sh
-    feh --bg-fill ~/Pictures/Wallpapers/pentest_bg.jpg & 
+    ~/.config/polybar/launch.sh
+    feh --bg-fill ~/Pictures/Wallpapers/pentest-wallpaper.png & 
     
     notify-send "🔒 Pentest Mode Activated" "High contrast, zero distractions"
     
@@ -62,7 +62,7 @@ elif [ "$MODE" == "ethereal" ]; then
     update_gtk "Adwaita-dark" "Papirus-Dark" "JetBrainsMono Nerd Font 11" "Adwaita"
     
     # 4. Launch Bars, Widgets & Wallpaper
-    ~/.config/polybar/launch-ethereal.sh
+    ~/.config/polybar/launch.sh
     nitrogen --restore & 
     conky -c ~/.config/conky/ethereal.conf &
     
