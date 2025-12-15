@@ -19,12 +19,13 @@ update_gtk() {
 if [ "$MODE" == "pentest" ]; then
     # --- PENTEST MODE (Void Cyber) ---
     
-    # 1. Symlink Shared Dotfiles (i3, picom, dunst, rofi)
+    # 1. Symlink Shared Dotfiles (i3, picom, dunst, rofi, polybar)
     ln -sf ~/.config/i3/config-pentest ~/.config/i3/config
     ln -sf ~/.config/picom/picom-pentest.conf ~/.config/picom/picom.conf
     ln -sf ~/.config/dunst/dunstrc-pentest ~/.config/dunst/dunstrc
     ln -sf ~/.config/rofi/config-pentest.rasi ~/.config/rofi/config.rasi
-    
+    ln -sf ~/.config/polybar/config-pentest.ini ~/.config/polybar/config.ini
+
     # 2. Symlink GTK Configs
     ln -sf ~/.config/gtk-3.0/settings-pentest.ini ~/.config/gtk-3.0/settings.ini
     ln -sf ~/.config/gtk-3.0/gtk-pentest.css      ~/.config/gtk-3.0/gtk.css
@@ -46,12 +47,13 @@ if [ "$MODE" == "pentest" ]; then
 elif [ "$MODE" == "ethereal" ]; then
     # --- ETHEREAL MODE (Anime Aesthetic) ---
     
-    # 1. Symlink Shared Dotfiles (i3, picom, dunst, rofi)
+    # 1. Symlink Shared Dotfiles (i3, picom, dunst, rofi, polybar)
     ln -sf ~/.config/i3/config-ethereal ~/.config/i3/config
     ln -sf ~/.config/picom/picom-ethereal.conf ~/.config/picom/picom.conf
     ln -sf ~/.config/dunst/dunstrc-ethereal ~/.config/dunst/dunstrc
     ln -sf ~/.config/rofi/config-ethereal.rasi ~/.config/rofi/config.rasi
-       
+    ln -sf ~/.config/polybar/config-ethereal.ini ~/.config/polybar/config.ini
+
     # 2. Symlink GTK Configs
     ln -sf ~/.config/gtk-3.0/settings-ethereal.ini ~/.config/gtk-3.0/settings.ini
     ln -sf ~/.config/gtk-3.0/gtk-ethereal.css      ~/.config/gtk-3.0/gtk.css
