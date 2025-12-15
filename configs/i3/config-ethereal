@@ -1,0 +1,86 @@
+# --- VARIABLES ---
+set $mod Mod4
+
+# --- FONTS ---
+font pango:JetBrainsMono Nerd Font 11
+
+# --- COLOR PALETTE ---
+set $bg           #0A0E27
+set $bg-alt       #1a1b26
+set $fg           #E5E9F0
+set $fg-dim       #4C566A
+set $pink         #FF007F
+set $cyan         #00D9FF
+set $gold         #FFB800
+set $purple       #BB00FF
+set $red          #FF3366
+
+# --- WINDOW COLORS ---
+# class                 border      bg          text    indicator   child_border
+client.focused          $pink       $bg         $fg     $purple     $pink
+client.focused_inactive $purple     $bg-alt     $fg-dim $purple     $fg-dim
+client.unfocused        $fg-dim     $bg         $fg-dim $fg-dim     $fg-dim
+client.urgent           $red        $red        $fg     $red        $red
+client.placeholder      $bg         $bg         $fg     $bg         $bg
+client.background       $bg
+
+# --- BORDERS & GAPS ---
+default_border pixel 3
+default_floating_border pixel 3
+for_window [class=".*"] border pixel 3
+
+gaps inner 15
+gaps outer 5
+smart_gaps on
+
+# --- KEYBINDINGS ---
+bindsym $mod+Return exec alacritty
+bindsym $mod+d exec "rofi -show drun"
+bindsym $mod+Shift+q kill
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+space floating toggle
+
+# Focus (Vim keys)
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# Move windows
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# Workspaces 
+set $ws1 "1:"
+set $ws2 "2:"
+set $ws3 "3:"
+set $ws4 "4:"
+set $ws5 "5:"
+set $ws6 "6:"
+set $ws7 "7:"
+set $ws8 "8:"
+set $ws9 "9:"
+
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+
+# --- AUTOSTART ---
+exec_always --no-startup-id picom --config ~/.config/picom/picom-ethereal.conf
+exec_always --no-startup-id nitrogen --restore
+exec_always --no-startup-id ~/.config/polybar/launch-ethereal.sh
+exec --no-startup-id dunst -config ~/.config/dunst/dunstrc-ethereal
+exec --no-startup-id conky -c ~/.config/conky/ethereal.conf
+exec --no-startup-id nm-applet
+
+# Lock screen
+bindsym $mod+Shift+x exec betterlockscreen -l blur
+exec --no-startup-id xss-lock -- betterlockscreen -l blur
