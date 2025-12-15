@@ -1,386 +1,310 @@
 #!/bin/bash
-
 # ╔═══════════════════════════════════════════════════════════╗
-# ║  MINERVA PENTEST MODE - AUTOMATED SETUP SCRIPT           ║
-# ║  Pure i3 + Black/Cyan Rice for Security Work             ║
-# ║  Zero prompts, zero bullshit, just install               ║
+# ║  MINERVA RICE - MASTER SETUP (FRESH ARCH)                ║
+# ║  Installs BOTH Pentest + Ethereal stacks                 ║
+# ║  Stages mode configs (does NOT hard-write live configs)  ║
+# ║  Defaults into: ETHEREAL                                 ║
 # ╚═══════════════════════════════════════════════════════════╝
 
-set -e  # Exit on any error
+set -euo pipefail
 
-# Colors
+# -------------------------
+# SETTINGS
+# -------------------------
+DEFAULT_MODE="ethereal"   # ethereal | pentest
+SET_XINITRC="true"        # true | false
+ENABLE_LY_DM="false"      # true | false (left off by default)
+
+# -------------------------
+# COLORS
+# -------------------------
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
-echo -e "${CYAN}"
-cat << "EOF"
-╔════════════════════════════════════════════════════════════╗
-║                                                            ║
-║   ███╗   ███╗██╗███╗   ██╗███████╗██████╗ ██╗   ██╗ █████╗  
-║   ████╗ ████║██║████╗  ██║██╔════╝██╔══██╗██║   ██║██╔══██╗ 
-║   ██╔████╔██║██║██╔██╗ ██║█████╗  ██████╔╝██║   ██║███████║ 
-║   ██║╚██╔╝██║██║██║╚██╗██║██╔══╝  ██╔══██╗╚██╗ ██╔╝██╔══██║ 
-║   ██║ ╚═╝ ██║██║██║ ╚████║███████╗██║  ██║ ╚████╔╝ ██║  ██║ 
-║   ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝  ╚═╝ 
-║                                                            ║
-║              PENTEST MODE - AUTOMATED INSTALLER           ║
-║              Black/Cyan - Zero Distractions               ║
-╚════════════════════════════════════════════════════════════╝
-EOF
-echo -e "${NC}"
+say() { echo -e "${CYAN}$*${NC}"; }
+ok()  { echo -e "${GREEN}✓${NC} $*"; }
+warn(){ echo -e "${YELLOW}⚠${NC} $*"; }
+die() { echo -e "${RED}❌${NC} $*"; exit 1; }
 
-sleep 1
+trap 'die "Install failed on line $LINENO. Fix the issue and re-run."' ERR
 
-# ============================================================
-# PRE-FLIGHT CHECKS
-# ============================================================
-
-if [ "$EUID" -eq 0 ]; then 
-    echo -e "${RED}❌ Don't run as root. Script will sudo when needed.${NC}"
-    exit 1
+# -------------------------
+# PRE-FLIGHT
+# -------------------------
+if [ "${EUID}" -eq 0 ]; then
+  die "Don't run as root. Script uses sudo when needed."
 fi
-
 if [ ! -f /etc/arch-release ]; then
-    echo -e "${RED}❌ This script is for Arch Linux only.${NC}"
-    exit 1
+  die "Arch Linux only."
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [ ! -d "$SCRIPT_DIR/configs" ]; then
-    echo -e "${RED}❌ Config directory not found!${NC}"
-    echo "Run from the cloned repo:"
-    echo "  git clone https://github.com/YourUsername/minerva-pentest"
-    echo "  cd minerva-pentest"
-    echo "  ./setup.sh"
-    exit 1
-fi
+[ -d "$SCRIPT_DIR/configs" ] || die "configs/ not found. Run from repo root."
+[ -f "$SCRIPT_DIR/rice-switch.sh" ] || die "rice-switch.sh not found in repo root."
 
-echo -e "${GREEN}✓${NC} Running from: $SCRIPT_DIR"
-echo -e "${CYAN}Installing Minerva Pentest Mode...${NC}"
-echo ""
-sleep 1
+say "Running from: $SCRIPT_DIR"
+say "Installing full Minerva stack (Pentest + Ethereal). Default: ${DEFAULT_MODE}"
+echo
 
-# ============================================================
-# SYSTEM UPDATE
-# ============================================================
-
-echo -e "${CYAN}[1/10] Updating system...${NC}"
+# -------------------------
+# 1) SYSTEM UPDATE
+# -------------------------
+say "[1/10] Updating system..."
 sudo pacman -Syu --noconfirm
-echo -e "${GREEN}✓${NC} System updated"
-echo ""
+ok "System updated"
+echo
 
-# ============================================================
-# INSTALL CORE PACKAGES
-# ============================================================
-
-echo -e "${CYAN}[2/10] Installing i3 ecosystem...${NC}"
+# -------------------------
+# 2) CORE PACKAGES (PACMAN)
+# -------------------------
+say "[2/10] Installing core packages..."
 sudo pacman -S --needed --noconfirm \
-    i3-wm \
-    polybar \
-    rofi \
-    dunst \
-    picom \
-    feh \
-    kitty \
-    thunar \
-    flameshot \
-    xorg-server \
-    xorg-xinit \
-    xorg-xrandr \
-    xorg-xsetroot \
-    xss-lock \
-    lxsession \
-    lxappearance
+  base-devel git curl \
+  xorg-server xorg-xinit xorg-xrandr xorg-xsetroot \
+  i3-wm polybar rofi dunst \
+  picom \
+  feh nitrogen \
+  kitty alacritty \
+  thunar ranger \
+  flameshot \
+  conky cava hyfetch fastfetch \
+  lxsession lxappearance \
+  xss-lock \
+  networkmanager nm-connection-editor network-manager-applet \
+  brightnessctl \
+  polkit-gnome \
+  xdg-utils \
+  imagemagick \
+  pipewire wireplumber pipewire-pulse pipewire-alsa pipewire-jack \
+  pavucontrol pamixer \
+  zsh \
+  qt5ct kvantum \
+  nano nano-syntax-highlighting \
+  ttf-jetbrains-mono-nerd ttf-font-awesome noto-fonts noto-fonts-emoji \
+  papirus-icon-theme
+ok "Core packages installed"
+echo
 
-echo -e "${GREEN}✓${NC} i3 ecosystem installed"
-
-# ============================================================
-# INSTALL FONTS
-# ============================================================
-
-echo -e "${CYAN}[3/10] Installing fonts...${NC}"
-sudo pacman -S --needed --noconfirm \
-    ttf-jetbrains-mono-nerd \
-    ttf-font-awesome \
-    noto-fonts \
-    noto-fonts-emoji
-
-echo -e "${GREEN}✓${NC} Fonts installed"
-
-# ============================================================
-# INSTALL THEMES & ICONS
-# ============================================================
-
-echo -e "${CYAN}[4/10] Installing themes...${NC}"
-sudo pacman -S --needed --noconfirm \
-    papirus-icon-theme \
-    qt5ct \
-    kvantum
-
-echo -e "${GREEN}✓${NC} Themes installed"
-
-# ============================================================
-# INSTALL AUDIO
-# ============================================================
-
-echo -e "${CYAN}[5/10] Installing audio system...${NC}"
+# Optional: remove jack2 if present (avoids conflicts on some installs)
 sudo pacman -Rdd --noconfirm jack2 2>/dev/null || true
+
+# -------------------------
+# 3) YAZI + HELPERS
+# -------------------------
+say "[3/10] Installing Yazi + helpers..."
 sudo pacman -S --needed --noconfirm \
-    pipewire \
-    wireplumber \
-    pipewire-pulse \
-    pipewire-alsa \
-    pipewire-jack \
-    pavucontrol \
-    pamixer
+  yazi ffmpegthumbnailer unarchiver jq poppler fd ripgrep fzf zoxide
+ok "Yazi installed"
+echo
 
-echo -e "${GREEN}✓${NC} Audio system installed"
+# -------------------------
+# 4) AUR (YAY + PACKAGES)
+# -------------------------
+say "[4/10] Installing AUR helper + AUR packages..."
+if ! command -v yay >/dev/null 2>&1; then
+  say "Installing yay..."
+  tmpdir="$(mktemp -d)"
+  git clone https://aur.archlinux.org/yay.git "$tmpdir/yay"
+  (cd "$tmpdir/yay" && makepkg -si --noconfirm)
+  rm -rf "$tmpdir"
+  ok "yay installed"
+fi
 
-# ============================================================
-# INSTALL UTILITIES
-# ============================================================
+# AUR packages your stack relies on
+yay -S --needed --noconfirm \
+  i3lock-color \
+  xautolock \
+  betterlockscreen \
+  rofi-greenclip \
+  picom-animations-git \
+  arc-gtk-theme
+ok "AUR packages installed"
+echo
 
-echo -e "${CYAN}[6/10] Installing system utilities...${NC}"
-sudo pacman -S --needed --noconfirm \
-    networkmanager \
-    nm-connection-editor \
-    network-manager-applet \
-    brightnessctl \
-    polkit-gnome \
-    xdg-utils \
-    imagemagick \
-    nano-syntax-highlighting
-
-echo -e "${GREEN}✓${NC} System utilities installed"
-
-# ============================================================
-# INSTALL SHELL & TOOLS
-# ============================================================
-
-echo -e "${CYAN}[7/10] Installing Zsh ecosystem...${NC}"
-
-# Install Zsh
-sudo pacman -S --needed --noconfirm zsh
-
-# Install Oh-My-Zsh (non-interactive)
+# -------------------------
+# 5) ZSH (OH-MY-ZSH + PLUGINS + PURE)
+# -------------------------
+say "[5/10] Setting up Zsh ecosystem..."
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 
-# Install Zsh plugins
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null || true
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null || true
+git clone https://github.com/zsh-users/zsh-autosuggestions \
+  "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" 2>/dev/null || true
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
+  "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting" 2>/dev/null || true
 
-# Install Pure prompt
 mkdir -p "$HOME/.zsh"
-git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure" 2>/dev/null || (cd "$HOME/.zsh/pure" && git pull)
-
-# Install fastfetch
-sudo pacman -S --needed --noconfirm fastfetch
-
-echo -e "${GREEN}✓${NC} Zsh ecosystem installed"
-
-# ============================================================
-# INSTALL YAZI
-# ============================================================
-
-echo -e "${CYAN}[8/10] Installing Yazi file manager...${NC}"
-sudo pacman -S --needed --noconfirm yazi ffmpegthumbnailer unarchiver jq poppler fd ripgrep fzf zoxide imagemagick
-
-echo -e "${GREEN}✓${NC} Yazi installed"
-
-# ============================================================
-# INSTALL AUR PACKAGES (BETTERLOCKSCREEN)
-# ============================================================
-
-echo -e "${CYAN}[9/10] Installing AUR packages...${NC}"
-
-# Install yay if not present
-if ! command -v yay &> /dev/null; then
-    echo "Installing yay..."
-    sudo pacman -S --needed --noconfirm base-devel git
-    cd /tmp
-    git clone https://aur.archlinux.org/yay.git
-    cd yay
-    makepkg -si --noconfirm
-    cd "$SCRIPT_DIR"
+if [ ! -d "$HOME/.zsh/pure" ]; then
+  git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
+else
+  (cd "$HOME/.zsh/pure" && git pull) || true
 fi
+ok "Zsh ecosystem ready"
+echo
 
-# Install i3lock-color (required for betterlockscreen)
-yay -S --needed --noconfirm i3lock-color
+# -------------------------
+# 6) DIRECTORY SCAFFOLDING
+# -------------------------
+say "[6/10] Creating directories..."
+mkdir -p \
+  "$HOME/.config"/{i3,polybar,rofi,dunst,picom,gtk-3.0,gtk-4.0,kitty,alacritty,cava,conky,ranger,hyfetch,yazi} \
+  "$HOME/.config/ranger/colorschemes" \
+  "$HOME/.local/bin" \
+  "$HOME/Pictures"/{Wallpapers,Screenshots}
+ok "Directories created"
+echo
 
-# Install xautolock
-yay -S --needed --noconfirm xautolock
-
-# Install arc-gtk-theme
-yay -S --needed --noconfirm arc-gtk-theme
-
-# Install betterlockscreen
-yay -S --needed --noconfirm betterlockscreen
-
-echo -e "${GREEN}✓${NC} AUR packages installed"
-
-# ============================================================
-# CREATE DIRECTORIES
-# ============================================================
-
-echo -e "${CYAN}[10/10] Setting up configurations...${NC}"
-
-mkdir -p ~/.config/i3
-mkdir -p ~/.config/polybar
-mkdir -p ~/.config/rofi
-mkdir -p ~/.config/kitty
-mkdir -p ~/.config/dunst
-mkdir -p ~/.config/picom
-mkdir -p ~/.config/yazi
-mkdir -p ~/.config/gtk-3.0
-mkdir -p ~/.config/gtk-4.0
-mkdir -p ~/Pictures/Wallpapers
-mkdir -p ~/Pictures/Screenshots
-
-echo -e "${GREEN}✓${NC} Directories created"
-
-# ============================================================
-# COPY CONFIG FILES
-# ============================================================
+# -------------------------
+# 7) STAGE CONFIGS (MODE FILES ONLY)
+#     NOTE: We DO NOT write the "active" files directly here:
+#     i3/config, picom/picom.conf, dunst/dunstrc, rofi/config.rasi, polybar/config.ini
+#     Those are created by rice-switch via symlinks.
+# -------------------------
+say "[7/10] Staging configs..."
 
 # i3
-cp -f "$SCRIPT_DIR/configs/i3/config" ~/.config/i3/config
-echo -e "${GREEN}✓${NC} i3 config"
+install -m 0644 "$SCRIPT_DIR/configs/i3/config-ethereal" "$HOME/.config/i3/config-ethereal"
+install -m 0644 "$SCRIPT_DIR/configs/i3/config-pentest"  "$HOME/.config/i3/config-pentest"
 
-# Polybar
-cp -f "$SCRIPT_DIR/configs/polybar/config.ini" ~/.config/polybar/config.ini
-cp -f "$SCRIPT_DIR/configs/polybar/launch.sh" ~/.config/polybar/launch.sh
-chmod +x ~/.config/polybar/launch.sh
-echo -e "${GREEN}✓${NC} Polybar config"
+# picom
+install -m 0644 "$SCRIPT_DIR/configs/picom/picom-ethereal.conf" "$HOME/.config/picom/picom-ethereal.conf"
+install -m 0644 "$SCRIPT_DIR/configs/picom/picom-pentest.conf"  "$HOME/.config/picom/picom-pentest.conf"
 
-# Rofi
-cp -f "$SCRIPT_DIR/configs/rofi/config.rasi" ~/.config/rofi/config.rasi
-echo -e "${GREEN}✓${NC} Rofi config"
+# dunst
+install -m 0644 "$SCRIPT_DIR/configs/dunst/dunstrc-ethereal" "$HOME/.config/dunst/dunstrc-ethereal"
+install -m 0644 "$SCRIPT_DIR/configs/dunst/dunstrc-pentest"  "$HOME/.config/dunst/dunstrc-pentest"
 
-# Kitty
-cp -f "$SCRIPT_DIR/configs/kitty/kitty.conf" ~/.config/kitty/kitty.conf
-echo -e "${GREEN}✓${NC} Kitty config"
+# rofi
+install -m 0644 "$SCRIPT_DIR/configs/rofi/config-ethereal.rasi" "$HOME/.config/rofi/config-ethereal.rasi"
+install -m 0644 "$SCRIPT_DIR/configs/rofi/config-pentest.rasi"  "$HOME/.config/rofi/config-pentest.rasi"
 
-# Dunst
-cp -f "$SCRIPT_DIR/configs/dunst/dunstrc" ~/.config/dunst/dunstrc
-echo -e "${GREEN}✓${NC} Dunst config"
+# polybar
+install -m 0644 "$SCRIPT_DIR/configs/polybar/config-ethereal.ini" "$HOME/.config/polybar/config-ethereal.ini"
+install -m 0644 "$SCRIPT_DIR/configs/polybar/config-pentest.ini"  "$HOME/.config/polybar/config-pentest.ini"
+install -m 0755 "$SCRIPT_DIR/configs/polybar/launch.sh" "$HOME/.config/polybar/launch.sh"
 
-# Picom
-cp -f "$SCRIPT_DIR/configs/picom/picom.conf" ~/.config/picom/picom.conf
-echo -e "${GREEN}✓${NC} Picom config"
+# terminals
+install -m 0644 "$SCRIPT_DIR/configs/kitty/kitty.conf" "$HOME/.config/kitty/kitty.conf"
+install -m 0644 "$SCRIPT_DIR/configs/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
 
-# Yazi
-cp -f "$SCRIPT_DIR/configs/yazi/theme.toml" ~/.config/yazi/theme.toml
-cp -f "$SCRIPT_DIR/configs/yazi/yazi.toml" ~/.config/yazi/yazi.toml
-echo -e "${GREEN}✓${NC} Yazi config"
+# extras
+install -m 0644 "$SCRIPT_DIR/configs/cava/config" "$HOME/.config/cava/config"
+install -m 0644 "$SCRIPT_DIR/configs/conky/conky.conf" "$HOME/.config/conky/ethereal.conf"
+install -m 0644 "$SCRIPT_DIR/configs/hyfetch/config.json" "$HOME/.config/hyfetch/config.json"
+install -m 0644 "$SCRIPT_DIR/configs/yazi/theme.toml" "$HOME/.config/yazi/theme.toml"
+install -m 0644 "$SCRIPT_DIR/configs/yazi/yazi.toml" "$HOME/.config/yazi/yazi.toml"
 
-# Zsh
-cp -f "$SCRIPT_DIR/configs/zsh/.zshrc" ~/.zshrc
-echo -e "${GREEN}✓${NC} Zsh config"
+# ranger + colorschemes folder if present
+if [ -f "$SCRIPT_DIR/configs/ranger/rc.conf" ]; then
+  install -m 0644 "$SCRIPT_DIR/configs/ranger/rc.conf" "$HOME/.config/ranger/rc.conf"
+fi
+if [ -d "$SCRIPT_DIR/configs/ranger/colorschemes" ]; then
+  cp -rf "$SCRIPT_DIR/configs/ranger/colorschemes/." "$HOME/.config/ranger/colorschemes/"
+fi
 
-# GTK
-cp -f "$SCRIPT_DIR/configs/gtk/gtk-3.0/settings.ini" ~/.config/gtk-3.0/settings.ini
-cp -f "$SCRIPT_DIR/configs/gtk/gtk-4.0/settings.ini" ~/.config/gtk-4.0/settings.ini
-echo -e "${GREEN}✓${NC} GTK config"
+# GTK (mode files)
+# gtk-3.0
+install -m 0644 "$SCRIPT_DIR/configs/gtk/gtk-3.0/settings-ethereal.ini" "$HOME/.config/gtk-3.0/settings-ethereal.ini"
+install -m 0644 "$SCRIPT_DIR/configs/gtk/gtk-3.0/settings-pentest.ini"  "$HOME/.config/gtk-3.0/settings-pentest.ini"
+install -m 0644 "$SCRIPT_DIR/configs/gtk/gtk-3.0/gtk-ethereal.css"      "$HOME/.config/gtk-3.0/gtk-ethereal.css"
+install -m 0644 "$SCRIPT_DIR/configs/gtk/gtk-3.0/gtk-pentest.css"       "$HOME/.config/gtk-3.0/gtk-pentest.css"
 
-# Nano
-cp -f "$SCRIPT_DIR/configs/nano/.nanorc" ~/.nanorc
-echo -e "${GREEN}✓${NC} Nano config"
+# gtk-4.0
+install -m 0644 "$SCRIPT_DIR/configs/gtk/gtk-4.0/settings-ethereal.ini" "$HOME/.config/gtk-4.0/settings-ethereal.ini"
+install -m 0644 "$SCRIPT_DIR/configs/gtk/gtk-4.0/settings-pentest.ini"  "$HOME/.config/gtk-4.0/settings-pentest.ini"
+install -m 0644 "$SCRIPT_DIR/configs/gtk/gtk-4.0/gtk-ethereal.css"      "$HOME/.config/gtk-4.0/gtk-ethereal.css"
+install -m 0644 "$SCRIPT_DIR/configs/gtk/gtk-4.0/gtk-pentest.css"       "$HOME/.config/gtk-4.0/gtk-pentest.css"
 
-# ============================================================
-# WALLPAPER SETUP
-# ============================================================
+# nano
+install -m 0644 "$SCRIPT_DIR/configs/nano/.nanorc" "$HOME/.nanorc"
 
-if [ -d "$SCRIPT_DIR/wallpapers" ] && [ "$(ls -A $SCRIPT_DIR/wallpapers)" ]; then
-    cp -f "$SCRIPT_DIR/wallpapers/"* ~/Pictures/Wallpapers/
-    FIRST_WALLPAPER=$(ls ~/Pictures/Wallpapers/ | head -n 1)
-    
-    # Set betterlockscreen wallpaper
-    betterlockscreen -u ~/Pictures/Wallpapers/$FIRST_WALLPAPER
-    
-    # Update i3 config with wallpaper path
-    sed -i "s|exec_always --no-startup-id feh --bg-fill.*|exec_always --no-startup-id feh --bg-fill ~/Pictures/Wallpapers/$FIRST_WALLPAPER|" ~/.config/i3/config
-    
-    echo -e "${GREEN}✓${NC} Wallpaper configured"
+# zshrc (fresh-safe)
+if [ ! -f "$HOME/.zshrc" ]; then
+  install -m 0644 "$SCRIPT_DIR/configs/zsh/.zshrc" "$HOME/.zshrc"
 else
-    echo -e "${YELLOW}⚠${NC}  No wallpapers found - add to ~/Pictures/Wallpapers/"
+  warn "~/.zshrc already exists; leaving untouched."
 fi
 
-# ============================================================
-# ENABLE SERVICES
-# ============================================================
+ok "Configs staged"
+echo
 
-sudo systemctl enable --now NetworkManager
-echo -e "${GREEN}✓${NC} NetworkManager enabled"
-
-# ============================================================
-# SET DEFAULT SHELL
-# ============================================================
-
-if [ "$SHELL" != "$(which zsh)" ]; then
-    echo -e "${CYAN}Changing default shell to Zsh...${NC}"
-    chsh -s $(which zsh)
-    echo -e "${GREEN}✓${NC} Default shell changed to Zsh"
+# -------------------------
+# 8) WALLPAPERS + LOCKSCREEN IMAGE
+# -------------------------
+say "[8/10] Installing wallpapers..."
+if [ -d "$SCRIPT_DIR/wallpapers" ] && [ "$(ls -A "$SCRIPT_DIR/wallpapers" 2>/dev/null)" ]; then
+  cp -f "$SCRIPT_DIR/wallpapers/"* "$HOME/Pictures/Wallpapers/" || true
+  ok "Wallpapers copied"
+else
+  warn "No wallpapers found in repo."
 fi
 
-# ============================================================
-# SETUP .XINITRC
-# ============================================================
+# Set betterlockscreen image (prefer ethereal on fresh install)
+if command -v betterlockscreen >/dev/null 2>&1; then
+  if [ -f "$HOME/Pictures/Wallpapers/ethereal-wallpaper.jpg" ]; then
+    betterlockscreen -u "$HOME/Pictures/Wallpapers/ethereal-wallpaper.jpg" || true
+  else
+    # fallback: first wallpaper found
+    first_wp="$(ls -1 "$HOME/Pictures/Wallpapers" 2>/dev/null | head -n 1 || true)"
+    if [ -n "${first_wp:-}" ]; then
+      betterlockscreen -u "$HOME/Pictures/Wallpapers/$first_wp" || true
+    fi
+  fi
+fi
+echo
 
-echo "exec i3" > ~/.xinitrc
-chmod +x ~/.xinitrc
-echo -e "${GREEN}✓${NC} .xinitrc configured"
+# -------------------------
+# 9) SERVICES + ENV DEFAULTS
+# -------------------------
+say "[9/10] Enabling services + defaults..."
+sudo systemctl enable --now NetworkManager >/dev/null 2>&1 || true
+ok "NetworkManager enabled"
 
-# ============================================================
-# FINAL SYSTEM CONFIG
-# ============================================================
-
-# Set GTK theme via gsettings (if available)
-if command -v gsettings &> /dev/null; then
-    gsettings set org.gnome.desktop.interface gtk-theme "Arc-Dark" 2>/dev/null || true
-    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" 2>/dev/null || true
+# Qt theming consistency
+PROFILE_FILE="$HOME/.profile"
+if ! grep -q "QT_QPA_PLATFORMTHEME=qt5ct" "$PROFILE_FILE" 2>/dev/null; then
+  echo 'export QT_QPA_PLATFORMTHEME=qt5ct' >> "$PROFILE_FILE"
+  ok "Added QT_QPA_PLATFORMTHEME=qt5ct to ~/.profile"
 fi
 
-echo -e "${CYAN}[11/11] Setting up Display Manager (Ly)...${NC}"
-sudo pacman -S --needed --noconfirm ly
-sudo systemctl disable getty@tty2.service
-sudo systemctl enable ly@tty2.service
+# Default shell
+if [ "${SHELL:-}" != "$(command -v zsh)" ]; then
+  chsh -s "$(command -v zsh)" || true
+  ok "Default shell set to zsh (applies next login)"
+fi
 
-echo -e "${GREEN}✓${NC} Ly Display Manager configured"
+# xinitrc
+if [ "$SET_XINITRC" = "true" ]; then
+  echo "exec i3" > "$HOME/.xinitrc"
+  chmod +x "$HOME/.xinitrc"
+  ok ".xinitrc written"
+fi
 
+# Optional Ly display manager
+if [ "$ENABLE_LY_DM" = "true" ]; then
+  sudo pacman -S --needed --noconfirm ly
+  sudo systemctl enable ly >/dev/null 2>&1 || true
+  ok "ly enabled"
+else
+  warn "Skipping ly (ENABLE_LY_DM=false)."
+fi
+echo
 
-echo ""
-echo -e "${CYAN}════════════════════════════════════════════════════${NC}"
+# -------------------------
+# 10) INSTALL rice-switch + ACTIVATE DEFAULT MODE
+# -------------------------
+say "[10/10] Installing rice-switch + activating ${DEFAULT_MODE}..."
+install -m 0755 "$SCRIPT_DIR/rice-switch.sh" "$HOME/.local/bin/rice-switch"
+
+# Activate default mode
+"$HOME/.local/bin/rice-switch" "$DEFAULT_MODE" || warn "rice-switch failed—check filenames/paths."
+ok "Default mode activated: ${DEFAULT_MODE}"
+
+echo
 echo -e "${GREEN}✅  INSTALLATION COMPLETE${NC}"
-echo -e "${CYAN}════════════════════════════════════════════════════${NC}"
-echo ""
-echo -e "${CYAN}Minerva Pentest Mode is ready.${NC}"
-echo ""
-echo -e "${YELLOW}To start:${NC}"
-echo "  1. Log out (or reboot)"
-echo "  2. Run: ${GREEN}startx${NC}"
-echo "  3. i3 will launch automatically"
-echo ""
-echo -e "${YELLOW}OR setup a display manager:${NC}"
-echo "  ${GREEN}sudo pacman -S lightdm lightdm-gtk-greeter${NC}"
-echo "  ${GREEN}sudo systemctl enable lightdm${NC}"
-echo "  ${GREEN}sudo reboot${NC}"
-echo ""
-echo -e "${CYAN}Key bindings:${NC}"
-echo "  ${GREEN}Super + Enter${NC}     → Terminal"
-echo "  ${GREEN}Super + D${NC}         → Launcher"
-echo "  ${GREEN}Super + Shift + Q${NC} → Kill window"
-echo "  ${GREEN}Super + Shift + X${NC} → Lock screen"
-echo "  ${GREEN}Print${NC}             → Screenshot"
-echo ""
-echo -e "${CYAN}Config locations:${NC}"
-echo "  i3:      ${YELLOW}~/.config/i3/config${NC}"
-echo "  Polybar: ${YELLOW}~/.config/polybar/config.ini${NC}"
-echo "  Kitty:   ${YELLOW}~/.config/kitty/kitty.conf${NC}"
-echo ""
-echo -e "${GREEN}Stay sharp. 🔒⚡${NC}"
-echo ""
+echo -e "${CYAN}Use:${NC}  rice-switch ethereal   |   rice-switch pentest"
+echo
