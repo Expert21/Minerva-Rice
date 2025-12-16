@@ -18,7 +18,7 @@ export ZSH="$HOME/.oh-my-zsh"
 
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 
-ZSH_THEME="pure"
+ZSH_THEME=""  # Using Pure via fpath instead
 
   
 
@@ -211,11 +211,10 @@ fastfetch
 alias backup='~/backup.sh'
 
   
-  
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-  
+# Pure theme path (required)
+fpath+=($HOME/.zsh/pure)
+autoload -U promptinit; promptinit
+prompt pure
 
 # --- VOID CYBER CUSTOMIZATION ---
 
