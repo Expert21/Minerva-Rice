@@ -75,6 +75,9 @@ exec --no-startup-id dunst -config ~/.config/dunst/dunstrc-ethereal
 exec --no-startup-id conky -c ~/.config/conky/ethereal.conf
 exec --no-startup-id nm-applet
 
+# Rice mode toggle (switch to pentest)
+bindsym $mod+Shift+m exec ~/.local/bin/rice-switch pentest
+
 # Lock screen
 bindsym $mod+Shift+x exec betterlockscreen -l blur
 exec --no-startup-id xss-lock -- betterlockscreen -l blur

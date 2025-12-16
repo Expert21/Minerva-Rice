@@ -303,16 +303,38 @@ fi
 echo
 
 # -------------------------
-# 10) INSTALL rice-switch + ACTIVATE DEFAULT MODE
+# 10) INSTALL rice-switch + SET DEFAULT MODE SYMLINKS
 # -------------------------
-say "[10/10] Installing rice-switch + activating ${DEFAULT_MODE}..."
+say "[10/10] Installing rice-switch + setting default mode (${DEFAULT_MODE})..."
 install -m 0755 "$SCRIPT_DIR/rice-switch.sh" "$HOME/.local/bin/rice-switch"
 
-# Activate default mode
-"$HOME/.local/bin/rice-switch" "$DEFAULT_MODE" || warn "rice-switch failed—check filenames/paths."
-ok "Default mode activated: ${DEFAULT_MODE}"
+# Set up symlinks for default mode (without launching GUI apps)
+# This avoids errors when running setup outside of X session
+if [ "$DEFAULT_MODE" = "ethereal" ]; then
+  ln -sf ~/.config/i3/config-ethereal ~/.config/i3/config
+  ln -sf ~/.config/picom/picom-ethereal.conf ~/.config/picom/picom.conf
+  ln -sf ~/.config/dunst/dunstrc-ethereal ~/.config/dunst/dunstrc
+  ln -sf ~/.config/rofi/config-ethereal.rasi ~/.config/rofi/config.rasi
+  ln -sf ~/.config/polybar/config-ethereal.ini ~/.config/polybar/config.ini
+  ln -sf ~/.config/gtk-3.0/settings-ethereal.ini ~/.config/gtk-3.0/settings.ini
+  ln -sf ~/.config/gtk-3.0/gtk-ethereal.css ~/.config/gtk-3.0/gtk.css
+  ln -sf ~/.config/gtk-4.0/settings-ethereal.ini ~/.config/gtk-4.0/settings.ini
+  ln -sf ~/.config/gtk-4.0/gtk-ethereal.css ~/.config/gtk-4.0/gtk.css
+else
+  ln -sf ~/.config/i3/config-pentest ~/.config/i3/config
+  ln -sf ~/.config/picom/picom-pentest.conf ~/.config/picom/picom.conf
+  ln -sf ~/.config/dunst/dunstrc-pentest ~/.config/dunst/dunstrc
+  ln -sf ~/.config/rofi/config-pentest.rasi ~/.config/rofi/config.rasi
+  ln -sf ~/.config/polybar/config-pentest.ini ~/.config/polybar/config.ini
+  ln -sf ~/.config/gtk-3.0/settings-pentest.ini ~/.config/gtk-3.0/settings.ini
+  ln -sf ~/.config/gtk-3.0/gtk-pentest.css ~/.config/gtk-3.0/gtk.css
+  ln -sf ~/.config/gtk-4.0/settings-pentest.ini ~/.config/gtk-4.0/settings.ini
+  ln -sf ~/.config/gtk-4.0/gtk-pentest.css ~/.config/gtk-4.0/gtk.css
+fi
+ok "Default mode set: ${DEFAULT_MODE}"
 
 echo
 echo -e "${GREEN}✅  INSTALLATION COMPLETE${NC}"
+echo -e "${CYAN}Reboot and log in to start i3 with your rice!${NC}"
 echo -e "${CYAN}Use:${NC}  rice-switch ethereal   |   rice-switch pentest"
 echo
