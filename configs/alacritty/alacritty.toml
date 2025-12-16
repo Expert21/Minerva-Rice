@@ -1,67 +1,68 @@
 # ==========================================================
-#   ALACRITTY CONFIG - ETHEREAL MODE
+#   ALACRITTY CONFIG - ETHEREAL MODE (TOML format)
 # ==========================================================
 
-window:
-  padding:
-    x: 15
-    y: 15
-  opacity: 0.90
-  decorations: none
-  dynamic_title: true
+[window]
+padding = { x = 15, y = 15 }
+opacity = 0.90
+decorations = "None"
+dynamic_title = true
 
-font:
-  normal:
-    family: JetBrainsMono Nerd Font
-    style: Regular
-  bold:
-    family: JetBrainsMono Nerd Font
-    style: Bold
-  italic:
-    family: JetBrainsMono Nerd Font
-    style: Italic
-  size: 12.0
+[font]
+size = 12.0
 
-colors:
-  primary:
-    background: '#0A0E27'
-    foreground: '#E5E9F0'
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
 
-  cursor:
-    text:   '#0A0E27'
-    cursor: '#FF007F'
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Bold"
 
-  selection:
-    text:       '#E5E9F0'
-    background: '#BB00FF'
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"
 
-  normal:
-    black:   '#1a1b26'
-    red:     '#FF3366'
-    green:   '#00FF9F'
-    yellow:  '#FFB800'
-    blue:    '#00D9FF'
-    magenta: '#FF007F'
-    cyan:    '#00FFFF'
-    white:   '#E5E9F0'
+[colors.primary]
+background = "#0A0E27"
+foreground = "#E5E9F0"
 
-  bright:
-    black:   '#4C566A'
-    red:     '#FF4577'
-    green:   '#00FFAA'
-    yellow:  '#FFCC00'
-    blue:    '#00E5FF'
-    magenta: '#FF00AA'
-    cyan:    '#00FFFF'
-    white:   '#FFFFFF'
+[colors.cursor]
+text = "#0A0E27"
+cursor = "#FF007F"
 
-cursor:
-  style:
-    shape: Block
-    blinking: On
-  blink_interval: 750
+[colors.selection]
+text = "#E5E9F0"
+background = "#BB00FF"
 
-bell:
-  animation: EaseOutExpo
-  duration: 100
-  color: '#FF007F'
+[colors.normal]
+black = "#1a1b26"
+red = "#FF3366"
+green = "#00FF9F"
+yellow = "#FFB800"
+blue = "#00D9FF"
+magenta = "#FF007F"
+cyan = "#00FFFF"
+white = "#E5E9F0"
+
+[colors.bright]
+black = "#4C566A"
+red = "#FF4577"
+green = "#00FFAA"
+yellow = "#FFCC00"
+blue = "#00E5FF"
+magenta = "#FF00AA"
+cyan = "#00FFFF"
+white = "#FFFFFF"
+
+[cursor]
+blink_interval = 750
+
+[cursor.style]
+shape = "Block"
+blinking = "On"
+
+[bell]
+animation = "EaseOutExpo"
+duration = 100
+color = "#FF007F"

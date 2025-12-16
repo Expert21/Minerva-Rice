@@ -13,7 +13,7 @@ set -euo pipefail
 # -------------------------
 DEFAULT_MODE="ethereal"   # ethereal | pentest
 SET_XINITRC="true"        # true | false
-ENABLE_LY_DM="false"      # true | false (left off by default)
+ENABLE_LY_DM="true"       # true | false — enables Ly display manager
 
 # -------------------------
 # COLORS
@@ -187,6 +187,12 @@ install -m 0644 "$SCRIPT_DIR/configs/rofi/config-pentest.rasi"  "$HOME/.config/r
 install -m 0644 "$SCRIPT_DIR/configs/polybar/config-ethereal.ini" "$HOME/.config/polybar/config-ethereal.ini"
 install -m 0644 "$SCRIPT_DIR/configs/polybar/config-pentest.ini"  "$HOME/.config/polybar/config-pentest.ini"
 install -m 0755 "$SCRIPT_DIR/configs/polybar/launch.sh" "$HOME/.config/polybar/launch.sh"
+# polybar scripts
+if [ -d "$SCRIPT_DIR/configs/polybar/scripts" ]; then
+  mkdir -p "$HOME/.config/polybar/scripts"
+  cp -rf "$SCRIPT_DIR/configs/polybar/scripts/"* "$HOME/.config/polybar/scripts/"
+  chmod +x "$HOME/.config/polybar/scripts/"*.sh 2>/dev/null || true
+fi
 
 # terminals
 install -m 0644 "$SCRIPT_DIR/configs/kitty/kitty.conf" "$HOME/.config/kitty/kitty.conf"
@@ -246,8 +252,8 @@ fi
 
 # Set betterlockscreen image (prefer ethereal on fresh install)
 if command -v betterlockscreen >/dev/null 2>&1; then
-  if [ -f "$HOME/Pictures/Wallpapers/ethereal-wallpaper.jpg" ]; then
-    betterlockscreen -u "$HOME/Pictures/Wallpapers/ethereal-wallpaper.jpg" || true
+  if [ -f "$HOME/Pictures/Wallpapers/ethereal-wallpaper.jpeg" ]; then
+    betterlockscreen -u "$HOME/Pictures/Wallpapers/ethereal-wallpaper.jpeg" || true
   else
     # fallback: first wallpaper found
     first_wp="$(ls -1 "$HOME/Pictures/Wallpapers" 2>/dev/null | head -n 1 || true)"
@@ -288,8 +294,9 @@ fi
 # Optional Ly display manager
 if [ "$ENABLE_LY_DM" = "true" ]; then
   sudo pacman -S --needed --noconfirm ly
-  sudo systemctl enable ly >/dev/null 2>&1 || true
-  ok "ly enabled"
+  # Ly 1.3.0+ uses ly@ttyX.service format
+  sudo systemctl enable ly@tty2.service >/dev/null 2>&1 || true
+  ok "ly enabled (tty2)"
 else
   warn "Skipping ly (ENABLE_LY_DM=false)."
 fi
