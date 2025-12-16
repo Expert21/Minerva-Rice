@@ -98,22 +98,34 @@ rice-switch pentest    # Switch to distraction-free mode
 ### Universal (Both Modes)
 | Keybind | Action |
 |---------|--------|
-| `Super + Return` | Open terminal |
+| `Super + Return` | Open terminal (Alacritty/Kitty) |
 | `Super + D` | Open Rofi launcher |
+| `Super + E` | Open File Manager (Ranger/Yazi) |
+| `Super + Shift + F` | Toggle Fullscreen |
+| `Super + Shift + Space` | Toggle Floating mode |
 | `Super + Shift + Q` | Kill focused window |
-| `Super + Shift + M` | Toggle rice mode |
+| `Super + Shift + M` | Toggle rice mode (Ethereal/Pentest) |
+| `Super + V` | Clipboard Manager (Greenclip) |
 | `Super + Shift + X` | Lock screen |
 | `Super + Arrows` | Change focus |
 | `Super + Shift + Arrows` | Move windows |
 | `Super + 1-5` | Switch workspace |
+| `Super + Shift + 1-5` | Move window to workspace |
 | `Print` | Screenshot (Flameshot) |
+
+### System Controls
+| Keybind | Action |
+|---------|--------|
+| `Super + Shift + C` | Reload i3 config |
+| `Super + Shift + R` | Restart i3 in place |
+| `Super + Shift + E` | Exit i3 (Logout) |
+| `XF86Audio...` | Volume Control |
+| `XF86MonBrightness...` | Brightness Control |
 
 ### Pentest Mode Extras
 | Keybind | Action |
 |---------|--------|
 | `Super + B` | Open Firefox |
-| `Super + F` | Open Yazi file manager |
-| `Super + C` | Clipboard manager (Greenclip) |
 
 ---
 
