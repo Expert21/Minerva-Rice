@@ -35,11 +35,14 @@ smart_gaps on
 
 # --- KEYBINDINGS ---
 bindsym $mod+Return exec alacritty
-bindsym $mod+d exec "rofi -show drun"
-bindsym $mod+Shift+q kill
+bindsym $mod+tab exec "rofi -show drun -theme config-ethereal.rasi"
+bindsym $mod++q kill
 bindsym $mod+Shift+f fullscreen toggle
 bindsym $mod+Shift+space floating toggle
 bindsym $mod+e exec alacritty -e ranger
+bindsym $mod+o exec systemctl reboot
+bindsym $mod+p exec systemctl poweroff
+
 
 # Focus (Arrow keys)
 bindsym $mod+Left focus left
