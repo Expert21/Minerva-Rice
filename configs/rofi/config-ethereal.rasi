@@ -66,6 +66,7 @@ listview {
 element {
     padding: 12px;
     border-radius: 8px;
+    background-color: transparent;
 }
 
 element selected {
@@ -75,11 +76,13 @@ element selected {
 }
 
 element-text {
+    background-color: transparent;
     color: inherit;
     vertical-align: 0.5;
 }
 
 element-icon {
+    background-color: transparent;
     size: 24px;
     margin: 0 10px 0 0;
 }
