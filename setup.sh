@@ -66,7 +66,7 @@ sudo pacman -S --needed --noconfirm \
   xorg-server xorg-xinit xorg-xrandr xorg-xsetroot \
   i3-wm polybar rofi dunst \
   picom \
-  feh nitrogen \
+  feh \
   kitty alacritty \
   thunar ranger \
   flameshot \
@@ -115,6 +115,7 @@ fi
 
 # AUR packages your stack relies on
 yay -S --needed --noconfirm \
+  nitrogen \
   i3lock-color \
   xautolock \
   betterlockscreen \
