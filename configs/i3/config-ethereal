@@ -37,7 +37,7 @@ smart_gaps on
 bindsym $mod+Return exec alacritty
 bindsym $mod+d exec "rofi -show drun"
 bindsym $mod+Shift+q kill
-bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+f fullscreen toggle
 bindsym $mod+Shift+space floating toggle
 bindsym $mod+e exec alacritty -e ranger
 
@@ -66,6 +66,25 @@ bindsym $mod+3 workspace $ws3
 bindsym $mod+4 workspace $ws4
 bindsym $mod+5 workspace $ws5
 
+# Move to workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+
+# --- SYSTEM ---
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exit i3?' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# --- AUDIO & BRIGHTNESS ---
+bindsym XF86AudioRaiseVolume exec pamixer -i 5
+bindsym XF86AudioLowerVolume exec pamixer -d 5
+bindsym XF86AudioMute exec pamixer -t
+bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+
 
 # --- AUTOSTART ---
 exec_always --no-startup-id picom --config ~/.config/picom/picom-ethereal.conf
@@ -74,6 +93,10 @@ exec_always --no-startup-id ~/.config/polybar/launch.sh
 exec --no-startup-id dunst -config ~/.config/dunst/dunstrc-ethereal
 exec --no-startup-id conky -c ~/.config/conky/ethereal.conf
 exec --no-startup-id nm-applet
+exec --no-startup-id greenclip daemon
+
+# Clipboard
+bindsym $mod+v exec rofi -modi "clipboard:greenclip print" -show clipboard
 
 # Rice mode toggle (switch to pentest)
 bindsym $mod+Shift+m exec ~/.local/bin/rice-switch pentest
