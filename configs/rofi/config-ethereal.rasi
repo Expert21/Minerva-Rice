@@ -1,4 +1,4 @@
-* {
+*{
     bg: #0A0E27;
     bg-alt: #1a1b26;
     fg: #E5E9F0;
@@ -13,7 +13,13 @@
     padding: 0;
     spacing: 0;
 }
-
+configuration {
+    modi: "drun,run";
+    show-icons: true;
+    font: "JetBrainsMono Nerd Font 11";
+    display-drun: "APPS";
+    display-run: "CMD";
+}
 window {
     width: 40%;
     background-color: @bg;

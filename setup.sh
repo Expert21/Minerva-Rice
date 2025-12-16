@@ -79,7 +79,7 @@ sudo pacman -S --needed --noconfirm \
   xdg-utils \
   imagemagick \
   pipewire wireplumber pipewire-pulse pipewire-alsa pipewire-jack \
-  pavucontrol pamixer \
+  pavucontrol pamixer playerctl \
   zsh \
   qt5ct kvantum \
   nano nano-syntax-highlighting \
