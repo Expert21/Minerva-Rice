@@ -74,7 +74,6 @@ sudo pacman -S --needed --noconfirm \
   xss-lock \
   networkmanager nm-connection-editor network-manager-applet \
   brightnessctl \
-  lemurs\
   polkit-gnome \
   xdg-utils \
   imagemagick \
@@ -121,7 +120,8 @@ yay -S --needed --noconfirm \
   betterlockscreen \
   rofi-greenclip \
   picom-animations-git \
-  arc-gtk-theme
+  arc-gtk-theme \
+  emptty
 ok "AUR packages installed"
 echo
 
@@ -292,30 +292,31 @@ if [ "$SET_XINITRC" = "true" ]; then
 fi
 
 
-# Create the folder structure Lemurs expects
-sudo mkdir -p /etc/lemurs/wms
+# -------------------------
+# EMPTTY DISPLAY MANAGER SETUP
+# -------------------------
+# Create emptty config directory
+sudo mkdir -p /etc/emptty
 
-# Create startup script for i3
-sudo tee /etc/lemurs/wms/i3 >/dev/null <<'EOF'
+# Copy config and MOTD (ASCII art) from rice
+sudo cp "$SCRIPT_DIR/configs/emptty/conf" /etc/emptty/conf
+sudo cp "$SCRIPT_DIR/configs/emptty/motd" /etc/emptty/motd
+
+# Create i3 session script for emptty
+sudo tee /etc/emptty/i3 >/dev/null <<'EOF'
 #!/bin/sh
 exec i3
 EOF
-
-# Make script executable
-sudo chmod +x /etc/lemurs/wms/i3
-
-# Create config folder and copy config from rice
-sudo mkdir -p /etc/lemurs
-sudo cp "$SCRIPT_DIR/configs/lemurs/config.toml" /etc/lemurs/config.toml
+sudo chmod +x /etc/emptty/i3
 
 # Disable other display managers just in case
-sudo systemctl disable --now ly 2>/dev/null || true
-sudo systemctl disable --now lightdm 2>/dev/null || true
-sudo systemctl disable --now sddm 2>/dev/null || true
+sudo systemctl disable ly 2>/dev/null || true
+sudo systemctl disable lightdm 2>/dev/null || true
+sudo systemctl disable sddm 2>/dev/null || true
 
-# Enable Lemurs
-sudo systemctl enable --now lemurs.service
-
+# Enable emptty (don't start now - will activate on reboot)
+sudo systemctl enable emptty
+ok "emptty display manager configured"
 
 
 # -------------------------

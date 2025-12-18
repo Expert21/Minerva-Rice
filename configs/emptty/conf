@@ -1,0 +1,62 @@
+# =====================================================
+# EMPTTY CONFIG - MINERVA RICE
+# =====================================================
+# Documentation: https://github.com/tvrzna/emptty
+
+# TTY number where emptty will run (default: 7)
+TTY_NUMBER=7
+
+# Default session to launch (matches script name in /etc/emptty or xinitrc)
+# For i3, this should match your session script name
+DEFAULT_SESSION=i3
+
+# Where to find session scripts
+# emptty looks here for executable scripts that start your WM/DE
+XINITRC_LAUNCH=true
+
+# Path to display the ASCII art / MOTD
+# This is where your custom logo goes!
+MOTD_PATH=/etc/emptty/motd
+
+# Enable dynamic MOTD (run a script instead of static file)
+# Set to a script path if you want dynamic content, otherwise leave empty
+DYNAMIC_MOTD_PATH=
+
+# Foreground color (text color)
+# Options: BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE
+FG_COLOR=CYAN
+
+# Background color
+# Options: BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE
+BG_COLOR=BLACK
+
+# Hide the cursor while on login screen
+HIDE_CURSOR=false
+
+# Enable numlock on startup
+ENABLE_NUMLOCK=false
+
+# Print session errors to display
+PRINT_INIT_ERRORS=true
+
+# Session log path
+LOGGING=enabled
+LOGGING_FILE=/var/log/emptty.$USER.log
+
+# Auto-select last used session
+DEFAULT_SESSION_ENV=
+
+# Autologin settings (uncomment to enable)
+# AUTOLOGIN=true
+# AUTOLOGIN_SESSION=i3
+# AUTOLOGIN_USER=your_username
+# AUTOLOGIN_MAX_RETRY=2
+
+# Display hostname
+DISPLAY_HOSTNAME=true
+
+# Xorg session settings
+XORG_ARGS=
+MCOOKIE_PATH=/usr/bin/mcookie
+
+# Wayland is handled automatically if session script starts a wayland compositor
