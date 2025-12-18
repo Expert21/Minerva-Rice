@@ -26,9 +26,53 @@ NC='\033[0m'
 say() { echo -e "${CYAN}$*${NC}"; }
 ok()  { echo -e "${GREEN}✓${NC} $*"; }
 warn(){ echo -e "${YELLOW}⚠${NC} $*"; }
+skip(){ echo -e "${YELLOW}⏭${NC} $* (already installed)"; }
 die() { echo -e "${RED}❌${NC} $*"; exit 1; }
 
 trap 'die "Install failed on line $LINENO. Fix the issue and re-run."' ERR
+
+# -------------------------
+# SMART INSTALL HELPER
+# -------------------------
+# Check if a package is installed (pacman or AUR)
+is_installed() {
+  pacman -Qi "$1" &>/dev/null
+}
+
+# Install a single package: skip if installed, try pacman first, then yay
+smart_install() {
+  local pkg="$1"
+  if is_installed "$pkg"; then
+    skip "$pkg"
+    return 0
+  fi
+  
+  # Try pacman first
+  if pacman -Si "$pkg" &>/dev/null; then
+    say "Installing $pkg via pacman..."
+    sudo pacman -S --needed --noconfirm "$pkg"
+    ok "$pkg installed"
+    return 0
+  fi
+  
+  # Fall back to yay (AUR)
+  if command -v yay &>/dev/null; then
+    say "Installing $pkg via yay (AUR)..."
+    yay -S --needed --noconfirm "$pkg"
+    ok "$pkg installed"
+    return 0
+  fi
+  
+  warn "Could not install $pkg (not found in pacman or AUR)"
+  return 1
+}
+
+# Install multiple packages using smart_install
+smart_install_all() {
+  for pkg in "$@"; do
+    smart_install "$pkg" || true
+  done
+}
 
 # -------------------------
 # PRE-FLIGHT
@@ -49,42 +93,60 @@ say "Installing full Minerva stack (Pentest + Ethereal). Default: ${DEFAULT_MODE
 echo
 
 # -------------------------
-# 1) SYSTEM UPDATE
+# 1) SYSTEM UPDATE + YAY (FIRST!)
 # -------------------------
-say "[1/10] Updating system..."
+say "[1/10] Updating system + ensuring yay is installed..."
 sudo pacman -Syu --noconfirm
 ok "System updated"
+
+# Install yay FIRST so it's available for fallback installs
+if ! command -v yay >/dev/null 2>&1; then
+  say "Installing yay (AUR helper)..."
+  # Need base-devel and git for yay
+  sudo pacman -S --needed --noconfirm base-devel git
+  tmpdir="$(mktemp -d)"
+  git clone https://aur.archlinux.org/yay.git "$tmpdir/yay"
+  (cd "$tmpdir/yay" && makepkg -si --noconfirm)
+  rm -rf "$tmpdir"
+  ok "yay installed"
+else
+  skip "yay"
+fi
 echo
 
 # -------------------------
-# 2) CORE PACKAGES (PACMAN)
+# 2) CORE PACKAGES
 # -------------------------
 say "[2/10] Installing core packages..."
-sudo pacman -S --needed --noconfirm \
-  base-devel git curl \
-  xorg-server xorg-xinit xorg-xrandr xorg-xsetroot \
-  i3-wm polybar rofi dunst \
-  picom \
-  feh \
-  kitty alacritty \
-  thunar ranger \
-  flameshot \
-  conky cava hyfetch fastfetch \
-  lxsession lxappearance \
-  xss-lock \
-  networkmanager nm-connection-editor network-manager-applet \
-  brightnessctl \
-  polkit-gnome \
-  xdg-utils \
-  imagemagick \
-  pipewire wireplumber pipewire-pulse pipewire-alsa pipewire-jack \
-  pavucontrol pamixer playerctl \
-  zsh \
-  qt5ct kvantum \
-  nano nano-syntax-highlighting \
-  ttf-jetbrains-mono-nerd ttf-font-awesome noto-fonts noto-fonts-emoji \
+
+CORE_PACKAGES=(
+  base-devel git curl
+  xorg-server xorg-xinit xorg-xrandr xorg-xsetroot
+  i3-wm polybar rofi dunst
+  picom
+  feh
+  kitty alacritty
+  thunar ranger
+  flameshot
+  conky cava fastfetch
+  lxsession lxappearance
+  xss-lock
+  networkmanager nm-connection-editor network-manager-applet
+  brightnessctl
+  polkit-gnome
+  xdg-utils
+  imagemagick
+  pipewire wireplumber pipewire-pulse pipewire-alsa pipewire-jack
+  pavucontrol pamixer playerctl
+  zsh
+  qt5ct kvantum
+  nano nano-syntax-highlighting
+  ttf-jetbrains-mono-nerd ttf-font-awesome noto-fonts noto-fonts-emoji
   papirus-icon-theme
-ok "Core packages installed"
+)
+
+smart_install_all "${CORE_PACKAGES[@]}"
+ok "Core packages check complete"
 echo
 
 # Optional: remove jack2 if present (avoids conflicts on some installs)
@@ -94,35 +156,33 @@ sudo pacman -Rdd --noconfirm jack2 2>/dev/null || true
 # 3) YAZI + HELPERS
 # -------------------------
 say "[3/10] Installing Yazi + helpers..."
-sudo pacman -S --needed --noconfirm \
+
+YAZI_PACKAGES=(
   yazi ffmpegthumbnailer unarchiver jq poppler fd ripgrep fzf zoxide
-ok "Yazi installed"
+)
+
+smart_install_all "${YAZI_PACKAGES[@]}"
+ok "Yazi check complete"
 echo
 
 # -------------------------
-# 4) AUR (YAY + PACKAGES)
+# 4) AUR PACKAGES
 # -------------------------
-say "[4/10] Installing AUR helper + AUR packages..."
-if ! command -v yay >/dev/null 2>&1; then
-  say "Installing yay..."
-  tmpdir="$(mktemp -d)"
-  git clone https://aur.archlinux.org/yay.git "$tmpdir/yay"
-  (cd "$tmpdir/yay" && makepkg -si --noconfirm)
-  rm -rf "$tmpdir"
-  ok "yay installed"
-fi
+say "[4/10] Installing AUR packages..."
 
-# AUR packages your stack relies on
-yay -S --needed --noconfirm \
-  nitrogen \
-  i3lock-color \
-  xautolock \
-  betterlockscreen \
-  rofi-greenclip \
-  picom-animations-git \
-  arc-gtk-theme \
+AUR_PACKAGES=(
+  nitrogen
+  i3lock-color
+  xautolock
+  betterlockscreen
+  rofi-greenclip
+  picom-animations-git
+  arc-gtk-theme
   emptty
-ok "AUR packages installed"
+)
+
+smart_install_all "${AUR_PACKAGES[@]}"
+ok "AUR packages check complete"
 echo
 
 # -------------------------
@@ -152,7 +212,7 @@ echo
 # -------------------------
 say "[6/10] Creating directories..."
 mkdir -p \
-  "$HOME/.config"/{i3,polybar,rofi,dunst,picom,gtk-3.0,gtk-4.0,kitty,alacritty,cava,conky,ranger,hyfetch,yazi} \
+  "$HOME/.config"/{i3,polybar,rofi,dunst,picom,gtk-3.0,gtk-4.0,kitty,alacritty,cava,conky,ranger,yazi} \
   "$HOME/.config/ranger/colorschemes" \
   "$HOME/.local/bin" \
   "$HOME/Pictures"/{Wallpapers,Screenshots}
@@ -201,7 +261,7 @@ install -m 0644 "$SCRIPT_DIR/configs/alacritty/alacritty.toml" "$HOME/.config/al
 # extras
 install -m 0644 "$SCRIPT_DIR/configs/cava/config" "$HOME/.config/cava/config"
 install -m 0644 "$SCRIPT_DIR/configs/conky/conky.conf" "$HOME/.config/conky/ethereal.conf"
-install -m 0644 "$SCRIPT_DIR/configs/hyfetch/config.json" "$HOME/.config/hyfetch/config.json"
+
 install -m 0644 "$SCRIPT_DIR/configs/yazi/theme.toml" "$HOME/.config/yazi/theme.toml"
 install -m 0644 "$SCRIPT_DIR/configs/yazi/yazi.toml" "$HOME/.config/yazi/yazi.toml"
 
