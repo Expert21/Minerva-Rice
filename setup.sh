@@ -13,7 +13,6 @@ set -euo pipefail
 # -------------------------
 DEFAULT_MODE="ethereal"   # ethereal | pentest
 SET_XINITRC="true"        # true | false
-ENABLE_LY_DM="true"       # true | false — enables Ly display manager
 
 # -------------------------
 # COLORS
@@ -75,6 +74,7 @@ sudo pacman -S --needed --noconfirm \
   xss-lock \
   networkmanager nm-connection-editor network-manager-applet \
   brightnessctl \
+  lemurs\
   polkit-gnome \
   xdg-utils \
   imagemagick \
@@ -291,16 +291,32 @@ if [ "$SET_XINITRC" = "true" ]; then
   ok ".xinitrc written"
 fi
 
-# Optional Ly display manager
-if [ "$ENABLE_LY_DM" = "true" ]; then
-  sudo pacman -S --needed --noconfirm ly
-  # Ly 1.3.0+ uses ly@ttyX.service format
-  sudo systemctl enable ly@tty2.service >/dev/null 2>&1 || true
-  ok "ly enabled (tty2)"
-else
-  warn "Skipping ly (ENABLE_LY_DM=false)."
-fi
-echo
+
+# Create the folder structure Lemurs expects
+sudo mkdir -p /etc/lemurs/wms
+
+# Create startup script for i3
+sudo tee /etc/lemurs/wms/i3 >/dev/null <<'EOF'
+#!/bin/sh
+exec i3
+EOF
+
+# Make script executable
+sudo chmod +x /etc/lemurs/wms/i3
+
+# Create config folder and copy config from rice
+sudo mkdir -p /etc/lemurs
+sudo cp "$SCRIPT_DIR/configs/lemurs/config.toml" /etc/lemurs/config.toml
+
+# Disable other display managers just in case
+sudo systemctl disable --now ly 2>/dev/null || true
+sudo systemctl disable --now lightdm 2>/dev/null || true
+sudo systemctl disable --now sddm 2>/dev/null || true
+
+# Enable Lemurs
+sudo systemctl enable --now lemurs.service
+
+
 
 # -------------------------
 # 10) INSTALL rice-switch + SET DEFAULT MODE SYMLINKS
