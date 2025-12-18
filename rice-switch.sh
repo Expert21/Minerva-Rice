@@ -40,7 +40,7 @@ if [ "$MODE" == "pentest" ]; then
     
     # 5. Launch Bars & Wallpaper
     ~/.config/polybar/launch.sh
-    feh --bg-fill ~/Pictures/Wallpapers/pentest-wallpaper.png & 
+    feh --bg-fill ~/Pictures/Wallpapers/pentest-wallpaper.jpg & 
     
     notify-send "🔒 Pentest Mode Activated" "High contrast, zero distractions"
     

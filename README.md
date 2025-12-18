@@ -103,7 +103,7 @@ rice-switch pentest    # Switch to distraction-free mode
 | `Super + E` | Open File Manager (Ranger/Yazi) |
 | `Super + Shift + F` | Toggle Fullscreen |
 | `Super + Shift + Space` | Toggle Floating mode |
-| `Super + Shift + Q` | Kill focused window |
+| `Super + Q` | Kill focused window |
 | `Super + Shift + M` | Toggle rice mode (Ethereal/Pentest) |
 | `Super + V` | Clipboard Manager (Greenclip) |
 | `Super + Shift + X` | Lock screen |
@@ -181,11 +181,12 @@ Run manually: `nitrogen --restore` or `feh --bg-fill ~/Pictures/Wallpapers/your-
 ### Alacritty config error
 Ensure the config is valid TOML format (Alacritty 0.12+ uses TOML, not YAML).
 
-### Ly display manager not starting
-Ly 1.3.0+ uses a new service name:
+### emptty display manager not starting
+Check service status:
 ```bash
-sudo systemctl enable ly@tty2.service
+sudo systemctl status emptty
 ```
+Ensure the config exists at `/etc/emptty/conf` and the i3 session script at `/etc/emptty/i3`.
 
 ---
 
