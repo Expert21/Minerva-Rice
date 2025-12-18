@@ -112,7 +112,7 @@ exec_always --no-startup-id picom --config ~/.config/picom/picom-ethereal.conf
 exec_always --no-startup-id nitrogen --restore
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 exec --no-startup-id dunst -config ~/.config/dunst/dunstrc-ethereal
-exec --no-startup-id conky -c ~/.config/conky/ethereal.conf
+exec --no-startup-id conky -c ~/.config/conky/conky.conf
 exec --no-startup-id nm-applet
 exec --no-startup-id greenclip daemon
 

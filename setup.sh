@@ -260,7 +260,7 @@ install -m 0644 "$SCRIPT_DIR/configs/alacritty/alacritty.toml" "$HOME/.config/al
 
 # extras
 install -m 0644 "$SCRIPT_DIR/configs/cava/config" "$HOME/.config/cava/config"
-install -m 0644 "$SCRIPT_DIR/configs/conky/conky.conf" "$HOME/.config/conky/ethereal.conf"
+install -m 0644 "$SCRIPT_DIR/configs/conky/conky.conf" "$HOME/.config/conky/conky.conf"
 
 install -m 0644 "$SCRIPT_DIR/configs/yazi/theme.toml" "$HOME/.config/yazi/theme.toml"
 install -m 0644 "$SCRIPT_DIR/configs/yazi/yazi.toml" "$HOME/.config/yazi/yazi.toml"
