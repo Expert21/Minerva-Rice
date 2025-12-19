@@ -25,6 +25,7 @@ if [ "$MODE" == "pentest" ]; then
     ln -sf ~/.config/dunst/dunstrc-pentest ~/.config/dunst/dunstrc
     ln -sf ~/.config/rofi/config-pentest.rasi ~/.config/rofi/config.rasi
     ln -sf ~/.config/polybar/config-pentest.ini ~/.config/polybar/config.ini
+    ln -sf ~/.config/fastfetch/config-pentest.jsonc ~/.config/fastfetch/config.jsonc
 
     # 2. Symlink GTK Configs
     ln -sf ~/.config/gtk-3.0/settings-pentest.ini ~/.config/gtk-3.0/settings.ini
@@ -53,6 +54,7 @@ elif [ "$MODE" == "ethereal" ]; then
     ln -sf ~/.config/dunst/dunstrc-ethereal ~/.config/dunst/dunstrc
     ln -sf ~/.config/rofi/config-ethereal.rasi ~/.config/rofi/config.rasi
     ln -sf ~/.config/polybar/config-ethereal.ini ~/.config/polybar/config.ini
+    ln -sf ~/.config/fastfetch/config-ethereal.jsonc ~/.config/fastfetch/config.jsonc
 
     # 2. Symlink GTK Configs
     ln -sf ~/.config/gtk-3.0/settings-ethereal.ini ~/.config/gtk-3.0/settings.ini

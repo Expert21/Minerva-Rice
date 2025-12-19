@@ -128,7 +128,7 @@ CORE_PACKAGES=(
   kitty alacritty
   thunar ranger
   flameshot
-  conky cava fastfetch
+  conky cava fastfetch tmux
   lxsession lxappearance
   xss-lock
   networkmanager nm-connection-editor network-manager-applet
@@ -212,7 +212,7 @@ echo
 # -------------------------
 say "[6/10] Creating directories..."
 mkdir -p \
-  "$HOME/.config"/{i3,polybar,rofi,dunst,picom,gtk-3.0,gtk-4.0,kitty,alacritty,cava,conky,ranger,yazi} \
+  "$HOME/.config"/{i3,polybar,rofi,dunst,picom,gtk-3.0,gtk-4.0,kitty,alacritty,cava,conky,ranger,yazi,fastfetch} \
   "$HOME/.config/ranger/colorschemes" \
   "$HOME/.local/bin" \
   "$HOME/Pictures"/{Wallpapers,Screenshots}
@@ -265,6 +265,18 @@ install -m 0644 "$SCRIPT_DIR/configs/conky/conky.conf" "$HOME/.config/conky/conk
 install -m 0644 "$SCRIPT_DIR/configs/yazi/theme.toml" "$HOME/.config/yazi/theme.toml"
 install -m 0644 "$SCRIPT_DIR/configs/yazi/yazi.toml" "$HOME/.config/yazi/yazi.toml"
 
+# fastfetch
+if [ -d "$SCRIPT_DIR/configs/fastfetch" ]; then
+  mkdir -p "$HOME/.config/fastfetch"
+  # Copy config files
+  install -m 0644 "$SCRIPT_DIR/configs/fastfetch/config-ethereal.jsonc" "$HOME/.config/fastfetch/config-ethereal.jsonc"
+  install -m 0644 "$SCRIPT_DIR/configs/fastfetch/config-pentest.jsonc"  "$HOME/.config/fastfetch/config-pentest.jsonc"
+  # Copy assets
+  if [ -d "$SCRIPT_DIR/configs/fastfetch/assets" ]; then
+    cp -rf "$SCRIPT_DIR/configs/fastfetch/assets" "$HOME/.config/fastfetch/"
+  fi
+fi
+
 # ranger + colorschemes folder if present
 if [ -f "$SCRIPT_DIR/configs/ranger/rc.conf" ]; then
   install -m 0644 "$SCRIPT_DIR/configs/ranger/rc.conf" "$HOME/.config/ranger/rc.conf"
@@ -294,6 +306,32 @@ if [ ! -f "$HOME/.zshrc" ]; then
   install -m 0644 "$SCRIPT_DIR/configs/zsh/.zshrc" "$HOME/.zshrc"
 else
   warn "~/.zshrc already exists; leaving untouched."
+fi
+
+# Ensure fastfetch is in zshrc
+if ! grep -q "FASTFETCH_DONE" "$HOME/.zshrc"; then
+  echo "" >> "$HOME/.zshrc"
+  
+  # Add Auto-Tmux Logic
+  echo "# Auto-launch tmux in Pentest Mode (Void Cyber)" >> "$HOME/.zshrc"
+  echo 'if [[ -z "$TMUX" ]]; then' >> "$HOME/.zshrc"
+  echo '    if [ -L "$HOME/.config/fastfetch/config.jsonc" ] && readlink "$HOME/.config/fastfetch/config.jsonc" | grep -q "pentest"; then' >> "$HOME/.zshrc"
+  echo '        exec tmux' >> "$HOME/.zshrc"
+  echo '    fi' >> "$HOME/.zshrc"
+  echo 'fi' >> "$HOME/.zshrc"
+  echo "" >> "$HOME/.zshrc"
+
+  echo "# Run fastfetch (Smart Mode)" >> "$HOME/.zshrc"
+  echo 'if [[ -n "$TMUX" ]]; then' >> "$HOME/.zshrc"
+  echo '    if ! tmux show-environment TMUX_FASTFETCH_SHOWN >/dev/null 2>&1; then' >> "$HOME/.zshrc"
+  echo '        fastfetch' >> "$HOME/.zshrc"
+  echo '        tmux set-environment TMUX_FASTFETCH_SHOWN 1' >> "$HOME/.zshrc"
+  echo '    fi' >> "$HOME/.zshrc"
+  echo 'elif [[ -z "$FASTFETCH_DONE" ]]; then' >> "$HOME/.zshrc"
+  echo '    fastfetch' >> "$HOME/.zshrc"
+  echo '    export FASTFETCH_DONE=1' >> "$HOME/.zshrc"
+  echo 'fi' >> "$HOME/.zshrc"
+  ok "Added fastfetch (with smart tmux guard) to ~/.zshrc"
 fi
 
 ok "Configs staged"
@@ -393,6 +431,7 @@ if [ "$DEFAULT_MODE" = "ethereal" ]; then
   ln -sf ~/.config/dunst/dunstrc-ethereal ~/.config/dunst/dunstrc
   ln -sf ~/.config/rofi/config-ethereal.rasi ~/.config/rofi/config.rasi
   ln -sf ~/.config/polybar/config-ethereal.ini ~/.config/polybar/config.ini
+  ln -sf ~/.config/fastfetch/config-ethereal.jsonc ~/.config/fastfetch/config.jsonc
   ln -sf ~/.config/gtk-3.0/settings-ethereal.ini ~/.config/gtk-3.0/settings.ini
   ln -sf ~/.config/gtk-3.0/gtk-ethereal.css ~/.config/gtk-3.0/gtk.css
   ln -sf ~/.config/gtk-4.0/settings-ethereal.ini ~/.config/gtk-4.0/settings.ini
@@ -403,12 +442,51 @@ else
   ln -sf ~/.config/dunst/dunstrc-pentest ~/.config/dunst/dunstrc
   ln -sf ~/.config/rofi/config-pentest.rasi ~/.config/rofi/config.rasi
   ln -sf ~/.config/polybar/config-pentest.ini ~/.config/polybar/config.ini
+  ln -sf ~/.config/fastfetch/config-pentest.jsonc ~/.config/fastfetch/config.jsonc
   ln -sf ~/.config/gtk-3.0/settings-pentest.ini ~/.config/gtk-3.0/settings.ini
   ln -sf ~/.config/gtk-3.0/gtk-pentest.css ~/.config/gtk-3.0/gtk.css
   ln -sf ~/.config/gtk-4.0/settings-pentest.ini ~/.config/gtk-4.0/settings.ini
   ln -sf ~/.config/gtk-4.0/gtk-pentest.css ~/.config/gtk-4.0/gtk.css
 fi
 ok "Default mode set: ${DEFAULT_MODE}"
+echo
+
+# -------------------------
+# 11) FINAL VERIFICATION
+# -------------------------
+say "[11/11] Verifying installation..."
+MISSING_ITEMS=()
+
+# Check Critical Commands
+for cmd in i3 polybar rofi dunst picom fastfetch kitty zsh rice-switch; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    MISSING_ITEMS+=("Command: $cmd")
+  fi
+done
+
+# Check Critical Configs
+CHECK_FILES=(
+  "$HOME/.config/i3/config-ethereal"
+  "$HOME/.config/polybar/config-ethereal.ini"
+  "$HOME/.config/fastfetch/config-ethereal.jsonc"
+  "$HOME/.config/fastfetch/assets/Ethereal.png"
+  "$HOME/.zshrc"
+  "$HOME/.local/bin/rice-switch"
+)
+
+for file in "${CHECK_FILES[@]}"; do
+  if [ ! -f "$file" ]; then
+    MISSING_ITEMS+=("File: $file")
+  fi
+done
+
+if [ ${#MISSING_ITEMS[@]} -eq 0 ]; then
+  ok "All checks passed! System is ready."
+else
+  echo -e "${RED}❌  SOME ITEMS ARE MISSING:${NC}"
+  printf "  - %s\n" "${MISSING_ITEMS[@]}"
+  echo -e "${YELLOW}Please check the logs and run setup.sh again if needed.${NC}"
+fi
 
 echo
 echo -e "${GREEN}✅  INSTALLATION COMPLETE${NC}"

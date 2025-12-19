@@ -207,9 +207,6 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 fastfetch
-
-alias backup='~/backup.sh'
-
   
 # Pure theme path (required)
 fpath+=($HOME/.zsh/pure)
@@ -241,3 +238,27 @@ alias install='sudo pacman -S'
 alias remove='sudo pacman -Rns'
 
 alias ll='ls -la'
+
+# Auto-launch tmux in Pentest Mode (Void Cyber)
+# Checks if we are NOT in tmux, and if the fastfetch config points to pentest
+if [[ -z "$TMUX" ]]; then
+    if [ -L "$HOME/.config/fastfetch/config.jsonc" ] && readlink "$HOME/.config/fastfetch/config.jsonc" | grep -q "pentest"; then
+        # We are in pentest mode -> Auto-launch tmux
+        # 'exec' replaces the shell so closing tmux closes the terminal
+        exec tmux
+    fi
+fi
+
+# Run fastfetch (Smart Mode)
+# 1. Inside Tmux: Run once per session (using tmux environment var)
+# 2. Normal Term: Run once per shell process
+if [[ -n "$TMUX" ]]; then
+    if ! tmux show-environment TMUX_FASTFETCH_SHOWN >/dev/null 2>&1; then
+        fastfetch
+        tmux set-environment TMUX_FASTFETCH_SHOWN 1
+    fi
+elif [[ -z "$FASTFETCH_DONE" ]]; then
+    fastfetch
+    export FASTFETCH_DONE=1
+fi
+
